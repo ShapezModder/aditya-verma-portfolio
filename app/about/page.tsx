@@ -16,8 +16,8 @@ const TimelineNode = ({ logo, institution, details, index }: TimelineNodeProps) 
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="relative flex flex-col items-center">
-      {/* Tooltip Card */}
+    <div className="relative flex flex-col items-center w-full md:w-auto">
+      {/* Tooltip Card - Desktop: above, Mobile: to the right */}
       <motion.div
         initial={{ opacity: 0, y: 10, scale: 0.9 }}
         animate={{
@@ -26,7 +26,7 @@ const TimelineNode = ({ logo, institution, details, index }: TimelineNodeProps) 
           scale: isHovered ? 1 : 0.9,
         }}
         transition={{ duration: 0.3 }}
-        className="absolute bottom-full mb-4 z-20 pointer-events-none"
+        className="hidden md:block absolute bottom-full mb-4 z-20 pointer-events-none"
       >
         <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[300px]">
           <p className="text-white font-bold text-sm mb-1">{institution}</p>
@@ -35,6 +35,27 @@ const TimelineNode = ({ logo, institution, details, index }: TimelineNodeProps) 
         {/* Arrow pointing down */}
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
           <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/30"></div>
+        </div>
+      </motion.div>
+      
+      {/* Tooltip Card - Mobile: to the right */}
+      <motion.div
+        initial={{ opacity: 0, x: 10, scale: 0.9 }}
+        animate={{
+          opacity: isHovered ? 1 : 0,
+          x: isHovered ? 0 : 10,
+          scale: isHovered ? 1 : 0.9,
+        }}
+        transition={{ duration: 0.3 }}
+        className="md:hidden absolute left-full ml-4 z-20 pointer-events-none"
+      >
+        <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[250px] max-w-[280px]">
+          <p className="text-white font-bold text-sm mb-1">{institution}</p>
+          <p className="text-gray-300 text-xs">{details}</p>
+        </div>
+        {/* Arrow pointing left */}
+        <div className="absolute top-1/2 right-full transform -translate-y-1/2 -mr-1">
+          <div className="w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-cyan-400/30"></div>
         </div>
       </motion.div>
 
@@ -441,16 +462,16 @@ export default function AboutPage() {
           </motion.div>
 
           {/* Top Section - Two Column Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 mb-20 items-center">
+          <div className="flex flex-col md:flex-row gap-8 sm:gap-12 mb-12 sm:mb-20 items-center">
             {/* Left Column - Profile Picture */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center w-full md:w-auto"
             >
-              <div className="relative w-80 h-80 md:w-96 md:h-96">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 max-w-[80%] md:max-w-none">
                 {/* Strong Glowing Ring/Halo - Multiple Layers */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/40 via-blue-400/40 to-cyan-400/40 blur-2xl" style={{ transform: "scale(1.2)" }} />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-teal-500/30 blur-xl" style={{ transform: "scale(1.15)" }} />
@@ -467,7 +488,7 @@ export default function AboutPage() {
                   />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-white mt-6">Aditya Verma</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mt-4 sm:mt-6">Aditya Verma</h2>
             </motion.div>
 
             {/* Right Column - About Me Text */}
@@ -478,19 +499,19 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-4"
             >
-              <p className="text-white text-lg leading-relaxed">
+              <p className="text-white text-lg leading-relaxed text-justify">
                 My journey into technology hasn&apos;t been a straight line, but it&apos;s always been my true north.
               </p>
-              <p className="text-gray-300 text-base leading-relaxed">
+              <p className="text-gray-300 text-base leading-relaxed text-justify">
                 Based in Bareilly, Uttar Pradesh, my passion for computer science sparked early, leading me to win several tech competitions during my school days. A shift in my academic path led me to explore biology, culminating in a BSc from CSJMU. While that path taught me immense discipline, it also solidified where my real interest lies: the world of code.
               </p>
-              <p className="text-gray-300 text-base leading-relaxed">
+              <p className="text-gray-300 text-base leading-relaxed text-justify">
                 Today, I&apos;m back to what I love, pursuing a BCA from Graphic Era University. As a self-taught enthusiast, I&apos;ve spent years learning from online resources and building a solid foundation before my formal degree. I enjoy creating unique, problem-solving projects, you can explore some of them in my projects section.
               </p>
-              <p className="text-gray-300 text-base leading-relaxed">
+              <p className="text-gray-300 text-base leading-relaxed text-justify">
                 For me, coding is more than a career goal; it&apos;s a hobby that keeps me motivated and constantly thinking. I aspire to turn this passion into a profession as a Full-Stack Developer at a high-value company, building digital solutions that make an impact.
               </p>
-              <p className="text-white text-lg leading-relaxed mt-6">
+              <p className="text-white text-lg leading-relaxed mt-6 text-justify">
                 It&apos;s great to have you here. You can see my educational timeline below.
               </p>
             </motion.div>
@@ -510,12 +531,16 @@ export default function AboutPage() {
 
             {/* Timeline Container */}
             <div className="relative py-12">
-              {/* Glowing Horizontal Line */}
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent transform -translate-y-1/2" />
-              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent transform -translate-y-1/2 blur-sm" />
+              {/* Glowing Line - Horizontal on md+, Vertical on mobile */}
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent transform -translate-y-1/2" />
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent transform -translate-y-1/2 blur-sm" />
+              
+              {/* Vertical Line for Mobile */}
+              <div className="md:hidden absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-transparent via-cyan-400/50 to-transparent transform -translate-x-1/2" />
+              <div className="md:hidden absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent transform -translate-x-1/2 blur-sm" />
 
               {/* Timeline Nodes */}
-              <div className="relative flex justify-between items-center max-w-5xl mx-auto px-4">
+              <div className="relative flex flex-col md:flex-row justify-between items-center max-w-5xl mx-auto px-4 gap-12 md:gap-0">
                 {timelineData.map((item, index) => (
                   <TimelineNode
                     key={index}
@@ -542,7 +567,7 @@ export default function AboutPage() {
             </h2>
 
             {/* Certificate Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {certificateData.map((cert, index) => (
                 <CertificateCard
                   key={index}

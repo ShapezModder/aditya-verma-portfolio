@@ -44,7 +44,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`header left-0 top-0 z-40 flex w-full items-center ${
+        className={`header left-0 top-0 z-40 flex w-full items-center pt-4 md:pt-6 ${
           sticky
             ? "fixed z-[9999] transition-all duration-300"
             : "absolute"
@@ -68,19 +68,21 @@ const Header = () => {
             <div className="w-60 max-w-full px-4 xl:mr-12">
               <Link
                 href="/"
-                className={`header-logo flex items-center gap-3 ${
-                  sticky ? "py-5 lg:py-2" : "py-8"
-                } `}
+                className={`header-logo inline-flex items-center gap-2.5 px-8 py-3.5 sm:px-6 sm:py-3 md:px-5 md:py-2.5 rounded-full border border-gray-700 bg-transparent transition-all duration-300 hover:bg-gray-800 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20 ${
+                  sticky ? "py-3.5 sm:py-3 md:py-2.5" : "py-3.5 sm:py-3 md:py-2.5"
+                }`}
               >
                 <Image
                   src="/logo.png"
                   alt="logo"
-                  width={48}
-                  height={48}
-                  className="w-12 h-12 object-contain"
+                  width={32}
+                  height={32}
+                  className="hidden md:block w-8 h-8 object-contain"
                   unoptimized
                 />
-                <span className="text-white text-xl font-bold">Home&lt;&gt;</span>
+                <span className="text-white text-base font-bold">
+                  <span className="hidden md:inline">Home</span>&lt;&gt;
+                </span>
               </Link>
             </div>
             <div className="flex w-full items-center justify-between px-4">
@@ -126,6 +128,7 @@ const Header = () => {
                         {menuItem.path ? (
                           <Link
                             href={menuItem.path}
+                            onClick={() => setNavbarOpen(false)}
                             className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
                               usePathName === menuItem.path
                                 ? "text-primary dark:text-white"
@@ -157,10 +160,11 @@ const Header = () => {
                                 openIndex === index ? "block" : "hidden"
                               }`}
                             >
-                              {menuItem.submenu.map((submenuItem, index) => (
+                              {menuItem.submenu?.map((submenuItem, index) => (
                                 <Link
                                   href={submenuItem.path}
                                   key={index}
+                                  onClick={() => setNavbarOpen(false)}
                                   className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
                                 >
                                   {submenuItem.title}
@@ -174,7 +178,7 @@ const Header = () => {
                   </ul>
                 </motion.nav>
               </div>
-              <div className="flex items-center gap-3 justify-end pr-16 lg:pr-0 flex-wrap">
+              <div className="hidden lg:flex items-center gap-3 justify-end pr-16 lg:pr-0 flex-wrap">
                 <GlowButton href="/about" variant="secondary">About</GlowButton>
                 <GlowButton href="/projects" variant="secondary">Projects</GlowButton>
                 <GlowButton href="/contact" variant="primary">Contact</GlowButton>

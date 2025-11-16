@@ -16,13 +16,13 @@ const Hero = () => {
       >
 
         <div className="container relative z-10 py-20" style={{ background: "transparent" }}>
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Text Content */}
             <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeIn("right", 0.2)}
-              className="relative space-y-8"
+              className="relative space-y-8 order-1 lg:order-none"
               style={{ zIndex: 10, background: "transparent" }}
             >
               {/* Name */}
@@ -96,10 +96,10 @@ const Hero = () => {
               initial={{ opacity: 0, scale: 0.8, x: 50 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="relative"
+              className="relative order-2 lg:order-none w-full"
               style={{ zIndex: 10, background: "transparent" }}
             >
-              <div className="relative w-full h-[600px] lg:h-[700px] overflow-hidden" style={{ background: "transparent" }}>
+              <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden" style={{ background: "transparent" }}>
                 <Image
                   src="/images/jellyfish.jpg"
                   alt="Jellyfish"

@@ -87,25 +87,35 @@ html,
     @apply bg-cyan-400/70;
   }
 
-  /* Custom Cursor Styles */
-  * {
-    cursor: none !important;
+  /* Custom Cursor Styles - Only on desktop */
+  @media (min-width: 769px) {
+    * {
+      cursor: none !important;
+    }
+
+    /* Hide default text cursor on all input elements - we use custom cursor instead */
+    input,
+    textarea,
+    [contenteditable],
+    input *,
+    textarea *,
+    [contenteditable] * {
+      cursor: none !important;
+    }
+
+    button,
+    a,
+    [role="button"],
+    select {
+      cursor: none !important;
+    }
   }
 
-  /* Hide default text cursor on all input elements - we use custom cursor instead */
-  input,
-  textarea,
-  [contenteditable],
-  input *,
-  textarea *,
-  [contenteditable] * {
-    cursor: none !important;
-  }
-
-  button,
-  a,
-  [role="button"],
-  select {
-    cursor: none !important;
+  /* Hide custom cursor component on mobile */
+  @media (max-width: 768px) {
+    .custom-cursor,
+    [class*="custom-cursor"] {
+      display: none !important;
+    }
   }
 }

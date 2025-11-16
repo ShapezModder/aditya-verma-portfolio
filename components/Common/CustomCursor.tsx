@@ -63,7 +63,7 @@ const CustomCursor = () => {
         {!isHoveringInput && (
           <motion.div
             key="round-cursor"
-            className="fixed top-0 left-0 pointer-events-none z-[9999]"
+            className="custom-cursor fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
             style={{
               x: cursorX,
               y: cursorY,
@@ -86,7 +86,7 @@ const CustomCursor = () => {
         {isHoveringInput && (
           <motion.div
             key="text-cursor"
-            className="fixed top-0 left-0 pointer-events-none z-[9999]"
+            className="custom-cursor fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
             style={{
               x: cursorX,
               y: cursorY,

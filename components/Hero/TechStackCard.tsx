@@ -55,9 +55,9 @@ const TechStackCard = ({ tech, index }: TechStackCardProps) => {
         {/* Gradient overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${tech.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
-        {/* Mouse-following glow */}
+        {/* Mouse-following glow - desktop only */}
         <motion.div
-          className="absolute rounded-full blur-2xl pointer-events-none"
+          className="hidden md:block absolute rounded-full blur-2xl pointer-events-none"
           style={{
             width: "120px",
             height: "120px",
@@ -72,10 +72,53 @@ const TechStackCard = ({ tech, index }: TechStackCardProps) => {
             damping: 30,
           }}
         />
-
-        {/* Animated border glow */}
+        
+        {/* Continuous glow for mobile */}
         <motion.div
-          className="absolute inset-0 rounded-2xl"
+          className="md:hidden absolute rounded-full blur-2xl pointer-events-none"
+          style={{
+            width: "120px",
+            height: "120px",
+            background: tech.glowColor,
+            left: "50%",
+            top: "50%",
+            x: "-50%",
+            y: "-50%",
+          }}
+          animate={{
+            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Animated border glow - continuous on mobile only */}
+        <motion.div
+          className="md:hidden absolute inset-0 rounded-2xl"
+          style={{
+            border: "1px solid transparent",
+          }}
+          animate={{
+            boxShadow: [
+              `0 0 20px ${tech.glowColor}`,
+              `0 0 40px ${tech.glowColor}`,
+              `0 0 20px ${tech.glowColor}`,
+            ],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        
+        {/* Desktop border glow - only on hover */}
+        <motion.div
+          className="hidden md:block absolute inset-0 rounded-2xl"
           style={{
             border: "1px solid transparent",
           }}
@@ -117,8 +160,8 @@ const TechStackCard = ({ tech, index }: TechStackCardProps) => {
               alt={tech.name}
               width={48}
               height={48}
-              className={`w-full h-full object-contain transition-all duration-300 ${
-                isHovered ? "" : "filter brightness-0 invert"
+              className={`w-full h-full object-contain transition-all duration-300 md:filter md:brightness-0 md:invert ${
+                isHovered ? "md:filter-none" : ""
               }`}
               unoptimized
             />
