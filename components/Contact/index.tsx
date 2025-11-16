@@ -90,7 +90,7 @@ const Contact = () => {
               Get In Touch
             </h2>
             <p className="relative z-10 mb-8 text-base font-medium text-gray-300">
-              Have a project in mind? Let's work together to bring your ideas to life.
+              Have a project in mind? Let&apos;s work together to bring your ideas to life.
             </p>
             <form onSubmit={handleSubmit} className="relative z-10">
               <div className="space-y-6">

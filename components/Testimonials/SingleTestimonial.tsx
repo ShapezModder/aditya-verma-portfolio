@@ -49,7 +49,7 @@ const SingleTestimonial = ({ testimonial }: { testimonial: Testimonial }) => {
           {ratingIcons}
         </motion.div>
         <p className="mb-8 border-b border-body-color border-opacity-10 pb-8 text-base leading-relaxed text-body-color transition-colors duration-300 group-hover:text-primary dark:border-white dark:border-opacity-10 dark:text-white dark:group-hover:text-primary">
-          "{content}
+          &quot;{content}
         </p>
         <div className="flex items-center">
           <motion.div
