@@ -82,10 +82,10 @@ const Hero = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Link
-                    href="#contact"
+                    href="/about"
                     className="group relative inline-block overflow-hidden rounded-lg border-2 border-cyan-400/50 bg-transparent px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out hover:border-cyan-400 hover:bg-cyan-400/10 hover:shadow-lg hover:shadow-cyan-400/30"
                   >
-                    Get In Touch
+                    About Me
                   </Link>
                 </motion.div>
               </motion.div>
