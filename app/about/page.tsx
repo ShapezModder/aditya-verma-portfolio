@@ -14,71 +14,91 @@ interface TimelineNodeProps {
 
 const TimelineNode = ({ logo, institution, details, index }: TimelineNodeProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
-    <div className="relative flex flex-col items-center w-full md:w-auto">
-      {/* Tooltip Card - Desktop: above, Mobile: to the right */}
-      <motion.div
-        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          y: isHovered ? 0 : 10,
-          scale: isHovered ? 1 : 0.9,
-        }}
-        transition={{ duration: 0.3 }}
-        className="hidden md:block absolute bottom-full mb-4 z-20 pointer-events-none"
-      >
-        <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[300px]">
-          <p className="text-white font-bold text-sm mb-1">{institution}</p>
-          <p className="text-gray-300 text-xs">{details}</p>
-        </div>
-        {/* Arrow pointing down */}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-          <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/30"></div>
-        </div>
-      </motion.div>
-      
-      {/* Tooltip Card - Mobile: centered above logo */}
-      <motion.div
-        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          y: isHovered ? 0 : 10,
-          scale: isHovered ? 1 : 0.9,
-        }}
-        transition={{ duration: 0.3 }}
-        className="md:hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
-      >
-        <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[250px] max-w-[280px] mx-auto">
-          <p className="text-white font-bold text-sm mb-1">{institution}</p>
-          <p className="text-gray-300 text-xs">{details}</p>
-        </div>
-        {/* Arrow pointing down */}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-          <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/30"></div>
-        </div>
-      </motion.div>
+    <>
+      <div className="relative flex flex-col items-center w-full md:w-auto">
+        {/* Tooltip Card - Desktop: above */}
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+          animate={{
+            opacity: isHovered ? 1 : 0,
+            y: isHovered ? 0 : 10,
+            scale: isHovered ? 1 : 0.9,
+          }}
+          transition={{ duration: 0.3 }}
+          className="hidden md:block absolute bottom-full mb-4 z-20 pointer-events-none"
+        >
+          <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[300px]">
+            <p className="text-white font-bold text-sm mb-1">{institution}</p>
+            <p className="text-gray-300 text-xs">{details}</p>
+          </div>
+          {/* Arrow pointing down */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+            <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/30"></div>
+          </div>
+        </motion.div>
 
-      {/* Circular Logo Card */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: index * 0.1 }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 1.1 }}
-        className="relative w-20 h-20 rounded-full bg-white border-2 border-cyan-400/50 p-3 cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50 z-10"
-      >
-        <Image
-          src={logo}
-          alt={institution}
-          fill
-          className="object-contain p-2 rounded-full"
-          unoptimized
-        />
-      </motion.div>
-    </div>
+        {/* Circular Logo Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: index * 0.1 }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setIsMobileOpen(true);
+            }
+          }}
+          whileHover={{ scale: 1.1 }}
+          className="relative w-20 h-20 rounded-full bg-white border-2 border-cyan-400/50 p-3 cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50 z-10"
+        >
+          <Image
+            src={logo}
+            alt={institution}
+            fill
+            className="object-contain p-2 rounded-full"
+            unoptimized
+          />
+        </motion.div>
+      </div>
+
+      {/* Mobile Modal - Centered Pop-up with Backdrop */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden fixed inset-0 z-50 flex items-center justify-center px-4"
+            onClick={() => setIsMobileOpen(false)}
+          >
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsMobileOpen(false)}
+            />
+            
+            {/* Centered Pop-up Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="relative bg-black/95 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-6 py-5 shadow-lg shadow-cyan-500/20 max-w-sm w-full z-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="text-white font-bold text-base mb-2">{institution}</p>
+              <p className="text-gray-300 text-sm leading-relaxed">{details}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
