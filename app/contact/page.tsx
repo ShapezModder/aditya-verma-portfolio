@@ -144,7 +144,7 @@ export default function ContactPage() {
                     <p className="text-gray-400 text-sm mb-3">Socials</p>
                     <div className="flex items-center gap-4">
                       <motion.a
-                        href="https://github.com/ShapezModder"
+                        href="https://github.com/adityaverma9777"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white transition-all duration-300"

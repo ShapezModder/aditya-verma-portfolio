@@ -99,7 +99,7 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <motion.a
-                href="https://github.com/ShapezModder"
+                href="https://github.com/adityaverma9777"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white transition-all duration-300"

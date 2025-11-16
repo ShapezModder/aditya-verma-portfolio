@@ -38,24 +38,24 @@ const TimelineNode = ({ logo, institution, details, index }: TimelineNodeProps) 
         </div>
       </motion.div>
       
-      {/* Tooltip Card - Mobile: to the right */}
+      {/* Tooltip Card - Mobile: centered above logo */}
       <motion.div
-        initial={{ opacity: 0, x: 10, scale: 0.9 }}
+        initial={{ opacity: 0, y: 10, scale: 0.9 }}
         animate={{
           opacity: isHovered ? 1 : 0,
-          x: isHovered ? 0 : 10,
+          y: isHovered ? 0 : 10,
           scale: isHovered ? 1 : 0.9,
         }}
         transition={{ duration: 0.3 }}
-        className="md:hidden absolute left-full ml-4 z-20 pointer-events-none"
+        className="md:hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
       >
-        <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[250px] max-w-[280px]">
+        <div className="bg-black/90 backdrop-blur-xl border border-cyan-400/30 rounded-lg px-4 py-3 shadow-lg shadow-cyan-500/20 min-w-[250px] max-w-[280px] mx-auto">
           <p className="text-white font-bold text-sm mb-1">{institution}</p>
           <p className="text-gray-300 text-xs">{details}</p>
         </div>
-        {/* Arrow pointing left */}
-        <div className="absolute top-1/2 right-full transform -translate-y-1/2 -mr-1">
-          <div className="w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-cyan-400/30"></div>
+        {/* Arrow pointing down */}
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+          <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-400/30"></div>
         </div>
       </motion.div>
 
