@@ -44,7 +44,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`header left-0 top-0 z-40 flex w-full items-center pt-4 md:pt-6 ${
+        className={`header left-0 top-0 z-40 flex w-full items-center py-4 md:py-6 ${
           sticky
             ? "fixed z-[9999] transition-all duration-300"
             : "absolute"
