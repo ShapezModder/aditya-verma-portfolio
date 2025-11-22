@@ -1,0 +1,57 @@
+================================================================================
+QUICK COPY-PASTE TEMPLATE FOR NEW PROJECTS
+================================================================================
+
+STEP 1: Add your image to: public/project_images/your-image-name.jpg
+
+STEP 2: Copy and paste this into components/Projects/projectsData.ts 
+        (inside the projects array):
+
+{
+  title: "YOUR PROJECT TITLE HERE",
+  category: "Category: YOUR CATEGORY HERE",
+  imagePath: "/project_images/your-image-name.jpg",
+  gitRepoUrl: "https://github.com/adityaverma9777/your-repo-name",
+  color: "from-cyan-400/20 to-blue-500/20",
+  glowColor: "rgba(34, 211, 238, 0.3)",
+},
+
+================================================================================
+EXAMPLE - Copy this and modify:
+================================================================================
+
+{
+  title: "E-Commerce Platform",
+  category: "Category: Full-Stack Web App",
+  imagePath: "/project_images/ecommerce-platform.jpg",
+  gitRepoUrl: "https://github.com/adityaverma9777/ecommerce-platform",
+  color: "from-purple-400/20 to-pink-500/20",
+  glowColor: "rgba(168, 85, 247, 0.3)",
+},
+
+================================================================================
+AVAILABLE COLOR SCHEMES (Optional - you can change these):
+================================================================================
+
+Cyan/Blue (Default):
+  color: "from-cyan-400/20 to-blue-500/20",
+  glowColor: "rgba(34, 211, 238, 0.3)",
+
+Purple/Pink:
+  color: "from-purple-400/20 to-pink-500/20",
+  glowColor: "rgba(168, 85, 247, 0.3)",
+
+Green/Emerald:
+  color: "from-green-400/20 to-emerald-500/20",
+  glowColor: "rgba(74, 222, 128, 0.3)",
+
+Orange/Red:
+  color: "from-orange-400/20 to-red-500/20",
+  glowColor: "rgba(251, 146, 60, 0.3)",
+
+Yellow/Amber:
+  color: "from-yellow-400/20 to-amber-500/20",
+  glowColor: "rgba(250, 204, 21, 0.3)",
+
+================================================================================
+
