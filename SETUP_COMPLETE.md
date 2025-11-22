@@ -102,3 +102,4 @@ export const projects: Project[] = [
 **You're all set!** 🚀 Adding new projects is now as simple as copying a template and updating a few values.
 
 
+
