@@ -24,3 +24,4 @@ If you add an image named `portfolio-website.jpg`, your path would be:
 imagePath: "/project_images/portfolio-website.jpg",
 ```
 
+

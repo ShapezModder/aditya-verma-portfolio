@@ -128,3 +128,4 @@ If you need to modify the template structure or add new features, check:
 - `components/Projects/ProjectCard.tsx` - The main component
 - `app/projects/page.tsx` - The projects page layout
 
+

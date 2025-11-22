@@ -424,7 +424,7 @@ const timelineData = [
   },
   {
     logo: "/four.png",
-    institution: "Graphic Era University, Dehradun",
+    institution: "Lovely Professional University, Punjab",
     details: "BCA | 2028",
   },
 ];

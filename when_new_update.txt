@@ -1,0 +1,3 @@
+PS E:\WRI\startup-nextjs-1.0.0> git config --global user.name "ShapezModder"
+PS E:\WRI\startup-nextjs-1.0.0> git config --global user.email "adityaverma9777@gmail.com"
+PS E:\WRI\startup-nextjs-1.0.0> git push origin main 
