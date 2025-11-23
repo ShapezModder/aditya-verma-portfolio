@@ -38,5 +38,13 @@ export const projects: Project[] = [
     glowColor: "rgba(34, 211, 238, 0.3)",
   },
   // Add more pexport const projects: Project[] = [
+  {
+    title: "Canvas2Code - From Sketch to Scale, Instantly.",
+    category: "Category: Real-Time Collaborative Development Environment (CDE)",
+    imagePath: "/project_images/canvas2code.jpg",
+    gitRepoUrl: "https://github.com/adityaverma9777/Canvas2Code", 
+    color: "from-purple-400/20 to-pink-500/20",
+    glowColor: "rgba(168, 85, 247, 0.3)",
+  },
 ];
 
