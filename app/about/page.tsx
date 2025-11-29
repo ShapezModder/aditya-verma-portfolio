@@ -526,7 +526,7 @@ export default function AboutPage() {
                 Based in Bareilly, Uttar Pradesh, my passion for computer science sparked early, leading me to win several tech competitions during my school days. A shift in my academic path led me to explore biology, culminating in a BSc from CSJMU. While that path taught me immense discipline, it also solidified where my real interest lies: the world of code.
               </p>
               <p className="text-gray-300 text-base leading-relaxed text-justify">
-                Today, I&apos;m back to what I love, pursuing a BCA from Graphic Era University. As a self-taught enthusiast, I&apos;ve spent years learning from online resources and building a solid foundation before my formal degree. I enjoy creating unique, problem-solving projects, you can explore some of them in my projects section.
+                Today, I&apos;m back to what I love, pursuing a BCA from Lovely Professional University. As a self-taught enthusiast, I&apos;ve spent years learning from online resources and building a solid foundation before my formal degree. I enjoy creating unique, problem-solving projects, you can explore some of them in my projects section.
               </p>
               <p className="text-gray-300 text-base leading-relaxed text-justify">
                 For me, coding is more than a career goal; it&apos;s a hobby that keeps me motivated and constantly thinking. I aspire to turn this passion into a profession as a Full-Stack Developer at a high-value company, building digital solutions that make an impact.
