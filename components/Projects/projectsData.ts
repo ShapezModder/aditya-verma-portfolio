@@ -47,10 +47,10 @@ export const projects: Project[] = [
     glowColor: "rgba(168, 85, 247, 0.3)",
   },
   {
-    title: "Fortress - Offense-Driven Security..",
-    category: "Category: GitHub access is not public to prevent misuse of offensive security tooling.",
+    title: "Fortress - Offense Driven Security.",
+    category: "Category: Adversarial Security Testing, Not public.",
     imagePath: "/project_images/Foretress.png",
-    gitRepoUrl: "https://github.com/adityaverma9777/Canvas2Code", 
+    gitRepoUrl: "https://enterprise-security-saas.vercel.app/", 
     color: "from-green-400/20 to-emerald-500/20",
     glowColor: "rgba(74, 222, 128, 0.3)",
   },
