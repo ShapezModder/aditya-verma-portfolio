@@ -2810,7 +2810,7 @@
                 const textWidth = isMobile ? 500 : 1200;
                 const textHeight = isMobile ? 150 : 300;
                 const fontSize = isMobile ? 60 : 140;
-                const particleGap = isMobile ? 4 : 6;
+                const particleGap = isMobile ? 2 : 6; // Reduced from 4 to 2 for mobile - denser particles
 
                 textCanvas.width = textWidth; textCanvas.height = textHeight;
                 ctx.fillStyle = '#000'; ctx.fillRect(0, 0, textCanvas.width, textCanvas.height);
@@ -2839,8 +2839,10 @@
                 });
             }
             render() {
+                const isMobile = window.innerWidth <= 768;
+                const particleSize = isMobile ? 9 : 7; // Larger on mobile for better visibility
                 this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.font = '7px "Courier New", monospace'; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle';
+                this.ctx.font = `${particleSize}px "Courier New", monospace`; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle';
                 this.particles.forEach(p => { this.ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`; this.ctx.fillText(p.char, p.x, p.y); });
             }
             animate() { this.updateParticles(); this.render(); requestAnimationFrame(() => this.animate()); }
