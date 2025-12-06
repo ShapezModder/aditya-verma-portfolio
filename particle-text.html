@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Particle Text Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #particleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .controls {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            min-width: 300px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .controls:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .controls h2 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group input[type="text"],
+        .control-group input[type="number"],
+        .control-group input[type="color"] {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .control-group input[type="text"]:focus,
+        .control-group input[type="number"]:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(100, 200, 255, 0.1);
+        }
+
+        .control-group input[type="color"] {
+            height: 45px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .range-value {
+            display: inline-block;
+            float: right;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                min-width: auto;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="controls">
+        <h2>✨ Particle Controls</h2>
+
+        <div class="control-group">
+            <label>Text Content</label>
+            <input type="text" id="textInput" value="basedash" placeholder="Enter your text">
+        </div>
+
+        <div class="control-group">
+            <label>Particle Density <span class="range-value" id="densityValue">8</span></label>
+            <input type="range" id="densitySlider" min="3" max="15" value="8" step="1">
+        </div>
+
+        <div class="control-group">
+            <label>Character Size <span class="range-value" id="sizeValue">8</span></label>
+            <input type="range" id="sizeSlider" min="6" max="14" value="8" step="1">
+        </div>
+
+        <div class="control-group">
+            <label>Mouse Force <span class="range-value" id="forceValue">80</span></label>
+            <input type="range" id="forceSlider" min="20" max="200" value="80" step="10">
+        </div>
+
+        <div class="control-group">
+            <label>Particle Color</label>
+            <input type="color" id="colorPicker" value="#ffffff">
+        </div>
+
+        <button id="updateBtn">Apply Changes</button>
+    </div>
+
+    <script>
+        class ASCIIParticleTextAnimation {
+            constructor() {
+                this.canvas = document.getElementById('particleCanvas');
+                this.ctx = this.canvas.getContext('2d');
+
+                this.particles = [];
+                this.mouse = { x: -1000, y: -1000 };
+
+                // ASCII characters to use as particles
+                this.asciiChars = ['H', '0', '1', '#', 'X', 'O', '+', '=', '-', '*', '@', '%', '&', '$'];
+
+                this.config = {
+                    text: 'basedash',
+                    fontSize: 180,
+                    density: 8,
+                    charSize: 8,
+                    mouseForce: 80,
+                    color: '#ffffff'
+                };
+
+                this.init();
+                this.setupEventListeners();
+                this.animate();
+            }
+
+            init() {
+                this.resize();
+                this.generateParticles();
+            }
+
+            generateParticles() {
+                // Create offscreen canvas to rasterize text
+                const textCanvas = document.createElement('canvas');
+                const textCtx = textCanvas.getContext('2d');
+
+                textCanvas.width = 1400;
+                textCanvas.height = 400;
+
+                textCtx.fillStyle = '#000';
+                textCtx.fillRect(0, 0, textCanvas.width, textCanvas.height);
+
+                textCtx.fillStyle = '#fff';
+                textCtx.font = `bold ${this.config.fontSize}px Arial, sans-serif`;
+                textCtx.textAlign = 'center';
+                textCtx.textBaseline = 'middle';
+                textCtx.fillText(this.config.text, textCanvas.width / 2, textCanvas.height / 2);
+
+                // Sample pixels to create particles
+                const imageData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
+                const pixels = imageData.data;
+
+                this.particles = [];
+                const density = this.config.density;
+
+                // Calculate offset to center text on canvas
+                const offsetX = (this.canvas.width - textCanvas.width) / 2;
+                const offsetY = (this.canvas.height - textCanvas.height) / 2;
+
+                for (let y = 0; y < textCanvas.height; y += density) {
+                    for (let x = 0; x < textCanvas.width; x += density) {
+                        const i = (y * textCanvas.width + x) * 4;
+                        const brightness = pixels[i];
+
+                        if (brightness > 128) {
+                            // Position on actual canvas
+                            const px = x + offsetX;
+                            const py = y + offsetY;
+
+                            // Random initial position
+                            const randomX = Math.random() * this.canvas.width;
+                            const randomY = Math.random() * this.canvas.height;
+
+                            // Random ASCII character
+                            const char = this.asciiChars[Math.floor(Math.random() * this.asciiChars.length)];
+
+                            this.particles.push({
+                                x: randomX,
+                                y: randomY,
+                                targetX: px,
+                                targetY: py,
+                                vx: 0,
+                                vy: 0,
+                                char: char,
+                                opacity: 0
+                            });
+                        }
+                    }
+                }
+            }
+
+            updateParticles() {
+                this.particles.forEach(p => {
+                    // Calculate distance from mouse
+                    const dx = p.x - this.mouse.x;
+                    const dy = p.y - this.mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Mouse repulsion
+                    const maxDistance = 150;
+                    if (dist < maxDistance && this.mouse.x !== -1000) {
+                        const force = (maxDistance - dist) / maxDistance * (this.config.mouseForce / 100);
+                        const angle = Math.atan2(dy, dx);
+                        p.vx += Math.cos(angle) * force;
+                        p.vy += Math.sin(angle) * force;
+                    }
+
+                    // Spring force back to target
+                    const tx = p.targetX - p.x;
+                    const ty = p.targetY - p.y;
+
+                    p.vx += tx * 0.05;
+                    p.vy += ty * 0.05;
+
+                    // Damping
+                    p.vx *= 0.85;
+                    p.vy *= 0.85;
+
+                    // Update position
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Update opacity based on distance from target
+                    const targetDist = Math.sqrt(tx * tx + ty * ty);
+                    p.opacity = Math.max(0, 1 - targetDist / 200);
+                });
+            }
+
+            render() {
+                // Clear canvas with dark background
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Set text rendering properties
+                this.ctx.font = `${this.config.charSize}px "Courier New", monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+
+                // Draw particles
+                this.particles.forEach(p => {
+                    // Convert hex color to rgba with opacity
+                    const r = parseInt(this.config.color.substr(1, 2), 16);
+                    const g = parseInt(this.config.color.substr(3, 2), 16);
+                    const b = parseInt(this.config.color.substr(5, 2), 16);
+
+                    this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.opacity})`;
+                    this.ctx.fillText(p.char, p.x, p.y);
+                });
+            }
+
+            animate() {
+                this.updateParticles();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            setupEventListeners() {
+                window.addEventListener('resize', () => {
+                    this.resize();
+                    this.generateParticles();
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                });
+
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.mouse.x = -1000;
+                    this.mouse.y = -1000;
+                });
+
+                // Control panel
+                document.getElementById('updateBtn').addEventListener('click', () => {
+                    this.config.text = document.getElementById('textInput').value || 'basedash';
+                    this.config.density = parseInt(document.getElementById('densitySlider').value);
+                    this.config.charSize = parseInt(document.getElementById('sizeSlider').value);
+                    this.config.mouseForce = parseInt(document.getElementById('forceSlider').value);
+                    this.config.color = document.getElementById('colorPicker').value;
+
+                    this.generateParticles();
+                });
+
+                // Update range value displays
+                const updateRangeDisplay = (id, value) => {
+                    document.getElementById(id).textContent = value;
+                };
+
+                document.getElementById('densitySlider').addEventListener('input', (e) => {
+                    updateRangeDisplay('densityValue', e.target.value);
+                });
+
+                document.getElementById('sizeSlider').addEventListener('input', (e) => {
+                    updateRangeDisplay('sizeValue', e.target.value);
+                });
+
+                document.getElementById('forceSlider').addEventListener('input', (e) => {
+                    updateRangeDisplay('forceValue', e.target.value);
+                });
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new ASCIIParticleTextAnimation();
+        });
+    </script>
+</body>
+
+</html>

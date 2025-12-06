@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Verma - ASCII Particle Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #particleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <script>
+        class ASCIIParticleTextAnimation {
+            constructor() {
+                this.canvas = document.getElementById('particleCanvas');
+                this.ctx = this.canvas.getContext('2d');
+
+                this.particles = [];
+                this.mouse = { x: -1000, y: -1000 };
+
+                // ASCII characters to use as particles
+                this.asciiChars = ['H', '0', '1', '#', 'X', 'O', '+', '=', '-', '*', '@', '%', '&', '$'];
+
+                // Hardcoded configuration
+                this.config = {
+                    text: 'Aditya Verma',
+                    fontSize: 180,
+                    density: 8,
+                    charSize: 8,
+                    mouseForce: 60,
+                    color: '#ffffff'
+                };
+
+                this.init();
+                this.setupEventListeners();
+                this.animate();
+            }
+
+            init() {
+                this.resize();
+                this.generateParticles();
+            }
+
+            generateParticles() {
+                // Create offscreen canvas to rasterize text
+                const textCanvas = document.createElement('canvas');
+                const textCtx = textCanvas.getContext('2d');
+
+                textCanvas.width = 1400;
+                textCanvas.height = 400;
+
+                textCtx.fillStyle = '#000';
+                textCtx.fillRect(0, 0, textCanvas.width, textCanvas.height);
+
+                textCtx.fillStyle = '#fff';
+                textCtx.font = `bold ${this.config.fontSize}px Arial, sans-serif`;
+                textCtx.textAlign = 'center';
+                textCtx.textBaseline = 'middle';
+                textCtx.fillText(this.config.text, textCanvas.width / 2, textCanvas.height / 2);
+
+                // Sample pixels to create particles
+                const imageData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
+                const pixels = imageData.data;
+
+                this.particles = [];
+                const density = this.config.density;
+
+                // Calculate offset to center text on canvas
+                const offsetX = (this.canvas.width - textCanvas.width) / 2;
+                const offsetY = (this.canvas.height - textCanvas.height) / 2;
+
+                for (let y = 0; y < textCanvas.height; y += density) {
+                    for (let x = 0; x < textCanvas.width; x += density) {
+                        const i = (y * textCanvas.width + x) * 4;
+                        const brightness = pixels[i];
+
+                        if (brightness > 128) {
+                            // Position on actual canvas
+                            const px = x + offsetX;
+                            const py = y + offsetY;
+
+                            // Random initial position
+                            const randomX = Math.random() * this.canvas.width;
+                            const randomY = Math.random() * this.canvas.height;
+
+                            // Random ASCII character
+                            const char = this.asciiChars[Math.floor(Math.random() * this.asciiChars.length)];
+
+                            this.particles.push({
+                                x: randomX,
+                                y: randomY,
+                                targetX: px,
+                                targetY: py,
+                                vx: 0,
+                                vy: 0,
+                                char: char,
+                                opacity: 0
+                            });
+                        }
+                    }
+                }
+            }
+
+            updateParticles() {
+                this.particles.forEach(p => {
+                    // Calculate distance from mouse
+                    const dx = p.x - this.mouse.x;
+                    const dy = p.y - this.mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Mouse repulsion
+                    const maxDistance = 150;
+                    if (dist < maxDistance && this.mouse.x !== -1000) {
+                        const force = (maxDistance - dist) / maxDistance * (this.config.mouseForce / 100);
+                        const angle = Math.atan2(dy, dx);
+                        p.vx += Math.cos(angle) * force;
+                        p.vy += Math.sin(angle) * force;
+                    }
+
+                    // Spring force back to target
+                    const tx = p.targetX - p.x;
+                    const ty = p.targetY - p.y;
+
+                    p.vx += tx * 0.05;
+                    p.vy += ty * 0.05;
+
+                    // Damping
+                    p.vx *= 0.85;
+                    p.vy *= 0.85;
+
+                    // Update position
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Update opacity based on distance from target
+                    const targetDist = Math.sqrt(tx * tx + ty * ty);
+                    p.opacity = Math.max(0, 1 - targetDist / 200);
+                });
+            }
+
+            render() {
+                // Clear canvas with dark background
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Set text rendering properties
+                this.ctx.font = `${this.config.charSize}px "Courier New", monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+
+                // Draw particles
+                this.particles.forEach(p => {
+                    // Convert hex color to rgba with opacity
+                    const r = parseInt(this.config.color.substr(1, 2), 16);
+                    const g = parseInt(this.config.color.substr(3, 2), 16);
+                    const b = parseInt(this.config.color.substr(5, 2), 16);
+
+                    this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.opacity})`;
+                    this.ctx.fillText(p.char, p.x, p.y);
+                });
+            }
+
+            animate() {
+                this.updateParticles();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            setupEventListeners() {
+                window.addEventListener('resize', () => {
+                    this.resize();
+                    this.generateParticles();
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                });
+
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.mouse.x = -1000;
+                    this.mouse.y = -1000;
+                });
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new ASCIIParticleTextAnimation();
+        });
+    </script>
+</body>
+
+</html>

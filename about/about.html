@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <!-- GSAP for professional scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* 3D Scroll Wrapper */
+        .scroll-wrapper {
+            position: relative;
+        }
+
+        .about-section {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+
+        /* White Transition Panel */
+        .transition-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 9999;
+            clip-path: circle(0% at 50% 100%);
+            pointer-events: none;
+        }
+
+        /* Scroll spacer for animation trigger */
+        .scroll-spacer {
+            height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            padding: 80px 40px 80px 80px;
+            position: relative;
+        }
+
+        /* About Section Title */
+        .section-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-100px);
+            animation: slideInFromLeft 1s ease forwards;
+            animation-delay: 0.2s;
+            max-width: 1400px;
+        }
+
+        @keyframes slideInFromLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Full-width underline */
+        .title-underline {
+            width: 0;
+            height: 2px;
+            background: #ffffff;
+            margin-bottom: 60px;
+            animation: expandLine 1.2s ease forwards;
+            animation-delay: 0.8s;
+            position: relative;
+        }
+
+        @keyframes expandLine {
+            to {
+                width: calc(100vw - 80px);
+            }
+        }
+
+        /* About Content Layout */
+        .about-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+            margin-bottom: 0;
+            max-width: 100%;
+            justify-content: space-between;
+        }
+
+        .about-text {
+            flex: 1;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.5s;
+            max-width: calc(100% - 280px);
+        }
+
+        .about-text p {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+
+        .profile-image-container {
+            width: 200px;
+            flex-shrink: 0;
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: 1.2s;
+            margin-right: 40px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-image-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('profile.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)) drop-shadow(0 0 1px rgba(255, 255, 255, 1)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+            mask-image: radial-gradient(circle 60px at var(--img-mouse-x, -200px) var(--img-mouse-y, -200px),
+                    black 0%,
+                    black 30%,
+                    transparent 100%);
+            -webkit-mask-image: radial-gradient(circle 60px at var(--img-mouse-x, -200px) var(--img-mouse-y, -200px),
+                    black 0%,
+                    black 30%,
+                    transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .profile-image-container:hover::before {
+            opacity: 1;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Education Section */
+        .education-section {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 2s;
+        }
+
+        .education-header {
+            display: inline-block;
+            margin-bottom: 50px;
+        }
+
+        .education-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .education-underline {
+            width: 100%;
+            height: 2px;
+            background: #ffffff;
+        }
+
+        /* Horizontal Timeline */
+        .timeline {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            max-width: 800px;
+            margin-left: 40px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #2a2a2a;
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .timeline-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+        }
+
+        .timeline-circle img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-circle {
+            transform: scale(1.2) translateY(-10px);
+            border-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-item:hover .timeline-circle img {
+            filter: grayscale(0%);
+        }
+
+        .timeline-circle a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+        }
+
+        .timeline-circle a img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        /* Hover Card */
+        .timeline-card {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .timeline-item:hover .timeline-card,
+        .timeline-card:hover {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        /* Arrow */
+        .timeline-card::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #1a1a1a;
+        }
+
+        /* Certificate Card Styling */
+        .cert-card {
+            min-width: 320px;
+            max-width: 350px;
+        }
+
+        .cert-preview {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .verify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+        }
+
+        .verify-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 24px rgba(16, 185, 129, 0.4),
+                0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .verify-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .about-content {
+                flex-direction: column;
+            }
+
+            .profile-image-container {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 20px;
+            }
+
+            .timeline {
+                flex-wrap: wrap;
+                gap: 40px;
+                justify-content: center;
+            }
+
+            .timeline-line {
+                display: none;
+            }
+
+            .timeline-circle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .timeline-circle img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .timeline-card {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                transform: none;
+                min-width: unset;
+            }
+
+            .timeline-item:hover .timeline-card {
+                transform: none;
+            }
+
+            .timeline-card::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- GSAP Transition Panel -->
+    <div class="transition-panel"></div>
+
+    <div class="scroll-wrapper">
+        <div class="about-section">
+            <div class="container">
+                <!-- About Section -->
+                <h1 class="section-title">About</h1>
+                <div class="title-underline"></div>
+
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>
+                            Hi, I'm a passionate software developer with a love for creating beautiful and functional
+                            web
+                            experiences. I specialize in modern web technologies and enjoy building projects that make a
+                            real
+                            impact.
+                        </p>
+                        <p>
+                            With expertise in full-stack development, I've worked on various projects ranging from
+                            responsive
+                            web applications to complex backend systems. I'm always eager to learn new technologies and
+                            take on
+                            challenging problems.
+                        </p>
+                        <p>
+                            When I'm not coding, you can find me exploring new design trends, contributing to
+                            open-source
+                            projects, or experimenting with the latest frameworks and tools in the web development
+                            ecosystem.
+                        </p>
+
+                        <!-- Education Section -->
+                        <div class="education-section">
+                            <div class="education-header">
+                                <h2 class="education-title">Education</h2>
+                                <div class="education-underline"></div>
+                            </div>
+
+                            <div class="timeline">
+                                <div class="timeline-line"></div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <img src="assets/1.png" alt="Education 1">
+                                    </div>
+                                    <div class="timeline-card">
+                                        <h3 class="card-title">High School</h3>
+                                        <p class="card-subtitle">St. Josephs School, Greater Noida • 2019</p>
+                                        <p class="card-description">
+                                            ICSE Board - Secured 83%
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <img src="assets/2.png" alt="Education 2">
+                                    </div>
+                                    <div class="timeline-card">
+                                        <h3 class="card-title">Intermediate</h3>
+                                        <p class="card-subtitle">C.P. International School, Farrukhabad • 2021</p>
+                                        <p class="card-description">
+                                            CBSE Board - Secured 80%
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <img src="assets/3.png" alt="Education 3">
+                                    </div>
+                                    <div class="timeline-card">
+                                        <h3 class="card-title">BS (Bio)</h3>
+                                        <p class="card-subtitle">Chattrapati Shahu Ji Maharaj University, Kanpur • 2025
+                                        </p>
+                                        <p class="card-description">
+                                            Division - First
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <img src="assets/4.png" alt="Education 4">
+                                    </div>
+                                    <div class="timeline-card">
+                                        <h3 class="card-title">BCA</h3>
+                                        <p class="card-subtitle">Lovely Professional University, Punjab • 2028</p>
+                                        <p class="card-description">
+                                            Ongoing
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certifications Section -->
+                        <div class="education-section">
+                            <div class="education-header">
+                                <h2 class="education-title">Certifications</h2>
+                                <div class="education-underline"></div>
+                            </div>
+
+                            <div class="timeline">
+                                <div class="timeline-line"></div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <a href="https://www.coursera.org/account/accomplishments/professional-cert/HUCC02UF0F6T"
+                                            target="_blank" rel="noopener noreferrer">
+                                            <img src="certifications/1.png" alt="Certification 1">
+                                        </a>
+                                    </div>
+                                    <div class="timeline-card cert-card">
+                                        <img src="assets/certificate1.jpg" alt="Certificate 1" class="cert-preview">
+                                        <h3 class="card-title">IBM Full Stack Software Developer</h3>
+                                        <p class="card-subtitle">Issuing Organization- Coursera• Year- 2025 </p>
+                                        <a href="https://www.coursera.org/account/accomplishments/professional-cert/HUCC02UF0F6T"
+                                            class="verify-btn" target="_blank" rel="noopener noreferrer">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                <path
+                                                    d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                    fill="currentColor" />
+                                            </svg>
+                                            Verify Certificate
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <a href="https://www.coursera.org/account/accomplishments/professional-cert/L5YYULUN2TVP"
+                                            target="_blank" rel="noopener noreferrer">
+                                            <img src="certifications/2.png" alt="Certification 2">
+                                        </a>
+                                    </div>
+                                    <div class="timeline-card cert-card">
+                                        <img src="assets/certificate2.jpg" alt="Certificate 2" class="cert-preview">
+                                        <h3 class="card-title">Google UX Design</h3>
+                                        <p class="card-subtitle">Issuing Organization- Coursera • Year- 2025</p>
+                                        <a href="https://www.coursera.org/account/accomplishments/professional-cert/L5YYULUN2TVP"
+                                            class="verify-btn" target="_blank" rel="noopener noreferrer">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                <path
+                                                    d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                    fill="currentColor" />
+                                            </svg>
+                                            Verify Certificate
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <img src="certifications/3.png" alt="Certification 3">
+                                    </div>
+                                    <div class="timeline-card cert-card">
+                                        <img src="assets/certificate3.jpg" alt="Certificate 3" class="cert-preview">
+                                        <h3 class="card-title">OOP in C++</h3>
+                                        <p class="card-subtitle">Issuing Organization- SRMIST• Year- 2025</p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-circle">
+                                        <a href="https://www.linkedin.com/learning/certificates/8ad568b7e53a0ce65626852ac3011d2d96fbf8bb452be3e58c64f6becdb89c9c"
+                                            target="_blank" rel="noopener noreferrer">
+                                            <img src="certifications/4.png" alt="Certification 4">
+                                        </a>
+                                    </div>
+                                    <div class="timeline-card cert-card">
+                                        <img src="assets/certificate4.jpg" alt="Certificate 4" class="cert-preview">
+                                        <h3 class="card-title">UX Design</h3>
+                                        <p class="card-subtitle">Issuing Organization- Linkedin • Year- 2025</p>
+                                        <a href="https://www.linkedin.com/learning/certificates/8ad568b7e53a0ce65626852ac3011d2d96fbf8bb452be3e58c64f6becdb89c9c"
+                                            class="verify-btn" target="_blank" rel="noopener noreferrer">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                <path
+                                                    d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                    fill="currentColor" />
+                                            </svg>
+                                            Verify Certificate
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-image-container">
+                        <img src="profile.png" alt="Profile Picture" class="profile-image">
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Mouse-tracking glow effect for profile image
+                const profileContainer = document.querySelector('.profile-image-container');
+
+                if (profileContainer) {
+                    profileContainer.addEventListener('mousemove', (e) => {
+                        const rect = profileContainer.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+
+                        const mouseXPercent = (x / rect.width) * 100;
+                        const mouseYPercent = (y / rect.height) * 100;
+
+                        profileContainer.style.setProperty('--img-mouse-x', `${mouseXPercent}%`);
+                        profileContainer.style.setProperty('--img-mouse-y', `${mouseYPercent}%`);
+                    });
+                }
+            </script>
+        </div>
+    </div>
+
+    <!-- Scroll Spacer for GSAP Animation Trigger -->
+    <div class="scroll-spacer"></div>
+    </div>
+
+    <!-- GSAP ScrollTrigger Animation -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Create smooth scroll-triggered circle reveal transition
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "top bottom",
+                end: "bottom bottom",
+                scrub: 1.5,
+                // markers: true // Uncomment to debug
+            }
+        });
+
+        // Animate the white panel with expanding circle clip-path
+        tl.to(".transition-panel", {
+            clipPath: "circle(150% at 50% 100%)",
+            duration: 1,
+            ease: "power2.inOut"
+        });
+
+        // Fade out content as we scroll
+        gsap.to(".about-section", {
+            opacity: 0,
+            y: -100,
+            scale: 0.95,
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "top 80%",
+                end: "top 20%",
+                scrub: 1
+            }
+        });
+
+        // Parallax effect on profile image
+        gsap.to(".profile-image-container", {
+            y: -150,
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "top bottom",
+                end: "bottom bottom",
+                scrub: 2
+            }
+        });
+    </script>
+</body>
+
+</html>

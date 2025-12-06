@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Verma | Full Stack Developer</title>
+    <!-- GSAP for professional scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ===== LOADER ===== */
+        .loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-welcome {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+
+        .loader-bar-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffffff, #888888);
+            border-radius: 2px;
+            animation: loadProgress 2s ease forwards 0.8s;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loadProgress {
+            to {
+                width: 100%;
+            }
+        }
+
+        /* ===== ANIMATED ASCII HEADER ===== */
+        .ascii-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            z-index: 100;
+            overflow: hidden;
+            background: linear-gradient(180deg, #000000 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        #headerCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* ===== SECTION 1: HERO ===== */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000000;
+        }
+
+        .hi-text {
+            text-align: center;
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            color: #888;
+            letter-spacing: 2px;
+            margin-bottom: -30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .particle-container {
+            width: 100%;
+            height: 45vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #particleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .role-text {
+            text-align: center;
+            margin-top: -40px;
+        }
+
+        .role-text h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 400;
+            letter-spacing: 14px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #e8dcc4 0%, #c9a227 40%, #d4740f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        .scroll-arrow svg {
+            width: 100%;
+            height: 100%;
+            stroke: #888;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateY(10px);
+                opacity: 1;
+            }
+        }
+
+        .scroll-text {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .scroll-text span {
+            color: #c9a227;
+            font-weight: 500;
+        }
+
+        /* ===== SECTION 2: TECH STACK (WHITE) ===== */
+        .tech-stack-section {
+            position: relative;
+            min-height: 100vh;
+            background: #ffffff;
+            padding: 100px 80px;
+            color: #000;
+        }
+
+        .tech-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .tech-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .tech-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tech-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+
+        .tech-category {
+            background: #fafafa;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #eee;
+            transition: all 0.4s ease;
+        }
+
+        .tech-category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .tech-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .tech-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+        }
+
+        /* ===== SECTION 3: PROJECTS 3D INTRO (WHITE) ===== */
+        .projects-intro-section {
+            position: relative;
+            height: 300vh;
+            background: #ffffff;
+        }
+
+        .projects-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #projects3DCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #projects-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(4rem, 16vw, 18vw);
+            font-weight: 900;
+            color: #000000;
+            opacity: 0;
+            z-index: 1;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .project-line {
+            position: absolute;
+            height: 4px;
+            background: #000000;
+            z-index: 1;
+            width: 0;
+        }
+
+        #project-line-top {
+            top: calc(50% - 8vw);
+            left: 0;
+        }
+
+        #project-line-bottom {
+            top: calc(50% + 8vw);
+            right: 0;
+        }
+
+        /* ===== SECTION 4: PROJECTS SHOWCASE ===== */
+        .projects-showcase-section {
+            position: relative;
+            min-height: 100vh;
+            background: #000000;
+            padding: 100px 80px;
+            color: #fff;
+        }
+
+        .projects-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .projects-header h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 40px;
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .project-image {
+            flex: 0 0 400px;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .project-content p {
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            padding: 12px 28px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+
+            .tech-stack-section,
+            .projects-showcase-section {
+                padding: 60px 24px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .project-card {
+                flex-direction: column;
+            }
+
+            .project-image {
+                flex: none;
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loader Screen -->
+    <div class="loader-screen" id="loader">
+        <p class="loader-welcome">Welcome</p>
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+        <p class="loader-text">Loading Portfolio</p>
+    </div>
+
+    <!-- Animated ASCII Header -->
+    <div class="ascii-header">
+        <canvas id="headerCanvas"></canvas>
+    </div>
+
+    <!-- ==================== SECTION 1: HERO ==================== -->
+    <section class="hero-section" id="hero">
+        <div class="hi-text">Hey there, I'm</div>
+        <div class="particle-container">
+            <canvas id="particleCanvas"></canvas>
+        </div>
+        <div class="role-text">
+            <h2>Full Stack Developer</h2>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
+            </div>
+            <p class="scroll-text">Scroll to <span>Explore</span></p>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 2: TECH STACK ==================== -->
+    <section class="tech-stack-section" id="techStack">
+        <div class="tech-header">
+            <h2>Tech Stack</h2>
+            <p>The technologies and tools I use to bring ideas to life</p>
+        </div>
+
+        <div class="tech-categories">
+            <!-- Frontend -->
+            <div class="tech-category">
+                <h3 class="category-title">Frontend</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                            alt="React">
+                        <span>React</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
+                            alt="Next.js">
+                        <span>Next.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                            alt="TypeScript">
+                        <span>TypeScript</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                            alt="JavaScript">
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+                            alt="Tailwind">
+                        <span>Tailwind</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                            alt="HTML5">
+                        <span>HTML5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backend -->
+            <div class="tech-category">
+                <h3 class="category-title">Backend</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                            alt="Node.js">
+                        <span>Node.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg"
+                            alt="Express">
+                        <span>Express</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                            alt="Python">
+                        <span>Python</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+                            alt="FastAPI">
+                        <span>FastAPI</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg"
+                            alt="GraphQL">
+                        <span>GraphQL</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+                        <span>Java</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div class="tech-category">
+                <h3 class="category-title">Database</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+                            alt="MongoDB">
+                        <span>MongoDB</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+                            alt="PostgreSQL">
+                        <span>PostgreSQL</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                            alt="MySQL">
+                        <span>MySQL</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg"
+                            alt="Redis">
+                        <span>Redis</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg"
+                            alt="Firebase">
+                        <span>Firebase</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg"
+                            alt="Supabase">
+                        <span>Supabase</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cloud & DevOps -->
+            <div class="tech-category">
+                <h3 class="category-title">Cloud & DevOps</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
+                            alt="AWS">
+                        <span>AWS</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg"
+                            alt="GCP">
+                        <span>Google Cloud</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+                            alt="Docker">
+                        <span>Docker</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+                            alt="Kubernetes">
+                        <span>Kubernetes</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"
+                            alt="Vercel">
+                        <span>Vercel</span>
+                    </div>
+                    <div class="tech-item">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+                        <span>Git</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 3: PROJECTS 3D INTRO ==================== -->
+    <section class="projects-intro-section" id="projectsIntro">
+        <div class="projects-sticky">
+            <canvas id="projects3DCanvas"></canvas>
+            <div id="projects-text">Projects</div>
+            <div id="project-line-top" class="project-line"></div>
+            <div id="project-line-bottom" class="project-line"></div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 4: PROJECTS SHOWCASE ==================== -->
+    <section class="projects-showcase-section" id="projectsShowcase">
+        <div class="projects-header">
+            <h2>Featured Work</h2>
+        </div>
+
+        <div class="project-card">
+            <div class="project-image">
+                <img src="https://picsum.photos/800/600?random=1" alt="Project 1">
+            </div>
+            <div class="project-content">
+                <h3>Project One</h3>
+                <p>A comprehensive full-stack application built with React, Node.js, and MongoDB. Features real-time
+                    updates, user authentication, and a modern responsive design.</p>
+                <div class="project-buttons">
+                    <a href="#" class="btn-primary">Live Demo</a>
+                    <a href="#" class="btn-secondary">View Code</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="project-image">
+                <img src="https://picsum.photos/800/600?random=2" alt="Project 2">
+            </div>
+            <div class="project-content">
+                <h3>Project Two</h3>
+                <p>An innovative AI-powered platform leveraging machine learning for predictive analytics. Built with
+                    Python, FastAPI, and deployed on AWS infrastructure.</p>
+                <div class="project-buttons">
+                    <a href="#" class="btn-primary">Live Demo</a>
+                    <a href="#" class="btn-secondary">View Code</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script>
+        // ===== LOADER =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 3000);
+        });
+
+        // ===== ANIMATED ASCII HEADER =====
+        class ASCIIWaveHeader {
+            constructor() {
+                this.canvas = document.getElementById('headerCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.chars = '+-=*#@%&$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+                this.grid = [];
+                this.init();
+                this.animate();
+                window.addEventListener('resize', () => this.init());
+            }
+
+            init() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+                this.charSize = 10;
+                this.cols = Math.ceil(this.canvas.width / this.charSize);
+                this.rows = Math.ceil(this.canvas.height / (this.charSize * 1.2));
+                const centerX = this.cols / 2;
+                const centerY = -this.rows * 0.3;
+                const radiusX = this.cols * 0.48;
+                const radiusY = this.rows * 1.5;
+                this.grid = [];
+                for (let row = 0; row < this.rows; row++) {
+                    this.grid[row] = [];
+                    for (let col = 0; col < this.cols; col++) {
+                        const dx = (col - centerX) / radiusX;
+                        const dy = (row - centerY) / radiusY;
+                        const dist = dx * dx + dy * dy;
+                        let opacity = 0;
+                        if (dist < 1) {
+                            opacity = (1 - dist) * 0.85;
+                            if (dist > 0.5) opacity *= (1 - dist) * 1.8;
+                        }
+                        this.grid[row][col] = {
+                            char: this.chars[Math.floor(Math.random() * this.chars.length)],
+                            opacity: opacity,
+                            changeTimer: Math.random() * 30
+                        };
+                    }
+                }
+            }
+
+            update() {
+                for (let row = 0; row < this.rows; row++) {
+                    for (let col = 0; col < this.cols; col++) {
+                        const cell = this.grid[row][col];
+                        if (cell.opacity > 0.05) {
+                            cell.changeTimer -= 1;
+                            if (cell.changeTimer <= 0) {
+                                cell.char = this.chars[Math.floor(Math.random() * this.chars.length)];
+                                cell.changeTimer = 5 + Math.random() * 20;
+                            }
+                        }
+                    }
+                }
+            }
+
+            render() {
+                this.ctx.fillStyle = '#000000';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.font = `${this.charSize}px "Courier New", monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                for (let row = 0; row < this.rows; row++) {
+                    for (let col = 0; col < this.cols; col++) {
+                        const cell = this.grid[row][col];
+                        if (cell.opacity > 0.05) {
+                            const x = col * this.charSize + this.charSize / 2;
+                            const y = row * this.charSize * 1.2 + this.charSize / 2;
+                            this.ctx.fillStyle = `rgba(255, 255, 255, ${cell.opacity})`;
+                            this.ctx.fillText(cell.char, x, y);
+                        }
+                    }
+                }
+            }
+
+            animate() {
+                this.update();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // ===== ASCII PARTICLE NAME =====
+        class ASCIIParticleName {
+            constructor() {
+                this.canvas = document.getElementById('particleCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: -1000, y: -1000 };
+                this.asciiChars = ['H', '0', '1', '#', 'X', 'O', '+', '=', '-', '*', '@', '%', '&', '$'];
+                this.config = {
+                    text: 'Aditya Verma',
+                    fontSize: 140,
+                    density: 6,
+                    charSize: 7,
+                    mouseForce: 60,
+                    color: '#ffffff'
+                };
+                this.init();
+                this.setupEventListeners();
+                this.animate();
+            }
+
+            init() {
+                this.resize();
+                this.generateParticles();
+            }
+
+            resize() {
+                const container = this.canvas.parentElement;
+                this.canvas.width = container.offsetWidth;
+                this.canvas.height = container.offsetHeight;
+            }
+
+            generateParticles() {
+                const textCanvas = document.createElement('canvas');
+                const textCtx = textCanvas.getContext('2d');
+                textCanvas.width = 1200;
+                textCanvas.height = 300;
+                textCtx.fillStyle = '#000';
+                textCtx.fillRect(0, 0, textCanvas.width, textCanvas.height);
+                textCtx.fillStyle = '#fff';
+                textCtx.font = `bold ${this.config.fontSize}px 'Inter', Arial, sans-serif`;
+                textCtx.textAlign = 'center';
+                textCtx.textBaseline = 'middle';
+                textCtx.fillText(this.config.text, textCanvas.width / 2, textCanvas.height / 2);
+                const imageData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
+                const pixels = imageData.data;
+                this.particles = [];
+                const offsetX = (this.canvas.width - textCanvas.width) / 2;
+                const offsetY = (this.canvas.height - textCanvas.height) / 2;
+                for (let y = 0; y < textCanvas.height; y += this.config.density) {
+                    for (let x = 0; x < textCanvas.width; x += this.config.density) {
+                        const i = (y * textCanvas.width + x) * 4;
+                        if (pixels[i] > 128) {
+                            this.particles.push({
+                                x: Math.random() * this.canvas.width,
+                                y: Math.random() * this.canvas.height,
+                                targetX: x + offsetX,
+                                targetY: y + offsetY,
+                                vx: 0,
+                                vy: 0,
+                                char: this.asciiChars[Math.floor(Math.random() * this.asciiChars.length)],
+                                opacity: 0
+                            });
+                        }
+                    }
+                }
+            }
+
+            updateParticles() {
+                this.particles.forEach(p => {
+                    const dx = p.x - this.mouse.x;
+                    const dy = p.y - this.mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150 && this.mouse.x !== -1000) {
+                        const force = (150 - dist) / 150 * (this.config.mouseForce / 100);
+                        p.vx += Math.cos(Math.atan2(dy, dx)) * force;
+                        p.vy += Math.sin(Math.atan2(dy, dx)) * force;
+                    }
+                    p.vx += (p.targetX - p.x) * 0.05;
+                    p.vy += (p.targetY - p.y) * 0.05;
+                    p.vx *= 0.85;
+                    p.vy *= 0.85;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    const targetDist = Math.sqrt((p.targetX - p.x) ** 2 + (p.targetY - p.y) ** 2);
+                    p.opacity = Math.max(0, 1 - targetDist / 200);
+                });
+            }
+
+            render() {
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.font = `${this.config.charSize}px "Courier New", monospace`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.particles.forEach(p => {
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    this.ctx.fillText(p.char, p.x, p.y);
+                });
+            }
+
+            animate() {
+                this.updateParticles();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+
+            setupEventListeners() {
+                window.addEventListener('resize', () => {
+                    this.resize();
+                    this.generateParticles();
+                });
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.mouse.x = -1000;
+                    this.mouse.y = -1000;
+                });
+            }
+        }
+
+        // Initialize after loader
+        setTimeout(() => {
+            new ASCIIWaveHeader();
+            new ASCIIParticleName();
+        }, 500);
+
+        // ===== GSAP SCROLL ANIMATIONS =====
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Fade hero elements on scroll
+        gsap.to(".hero-section", {
+            opacity: 0.3,
+            scrollTrigger: {
+                trigger: ".tech-stack-section",
+                start: "top bottom",
+                end: "top center",
+                scrub: 1
+            }
+        });
+
+        // Hide ASCII header in white sections
+        gsap.to(".ascii-header", {
+            opacity: 0,
+            scrollTrigger: {
+                trigger: ".tech-stack-section",
+                start: "top 80%",
+                end: "top 50%",
+                scrub: 1
+            }
+        });
+    </script>
+
+    <!-- Three.js Projects 3D Module -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+        class Projects3DIntro {
+            constructor() {
+                this.container = document.querySelector('.projects-sticky');
+                this.canvas = document.getElementById('projects3DCanvas');
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.model = null;
+
+                this.init();
+                this.setupLighting();
+                this.loadModel();
+                this.setupScrollAnimations();
+                this.animate();
+            }
+
+            init() {
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.z = 8;
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.canvas.parentNode.replaceChild(this.renderer.domElement, this.canvas);
+                this.renderer.domElement.id = 'projects3DCanvas';
+                this.renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;';
+
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            setupLighting() {
+                this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+                const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+                mainLight.position.set(5, 5, 5);
+                this.scene.add(mainLight);
+                const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                fillLight.position.set(-5, 0, -5);
+                this.scene.add(fillLight);
+            }
+
+            loadModel() {
+                const loader = new FBXLoader();
+                const textureLoader = new THREE.TextureLoader();
+                const textures = {
+                    base02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_BaseColor.png'),
+                    normal02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Normal.png'),
+                    rough02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Roughness.png'),
+                    base03: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_BaseColor.png'),
+                    normal03: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_Normal.png'),
+                    rough03: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_Roughness.png')
+                };
+
+                loader.load('atlas-holding-the-earth (1)/source/SM_Atlas.fbx', (fbx) => {
+                    this.model = fbx;
+                    this.model.traverse((child) => {
+                        if (child.isMesh) {
+                            const mat = new THREE.MeshStandardMaterial({
+                                transparent: true,
+                                opacity: 0,
+                                roughness: 0.8,
+                                metalness: 0.1,
+                                map: textures.base02,
+                                normalMap: textures.normal02,
+                                roughnessMap: textures.rough02
+                            });
+                            child.material = mat;
+                        }
+                    });
+                    const box = new THREE.Box3().setFromObject(this.model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    const scale = 5 / Math.max(size.x, size.y, size.z);
+                    this.model.scale.setScalar(scale);
+                    this.model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+                    this.scene.add(this.model);
+                });
+            }
+
+            setupScrollAnimations() {
+                const section = document.getElementById('projectsIntro');
+                const textEl = document.getElementById('projects-text');
+                const lineTop = document.getElementById('project-line-top');
+                const lineBottom = document.getElementById('project-line-bottom');
+
+                gsap.registerPlugin(ScrollTrigger);
+
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1,
+                    onUpdate: (self) => {
+                        const progress = self.progress;
+
+                        if (this.model) {
+                            // Fade in model (0-33%)
+                            if (progress < 0.33) {
+                                const fadeProgress = progress / 0.33;
+                                this.model.traverse((child) => {
+                                    if (child.isMesh) child.material.opacity = fadeProgress;
+                                });
+                                this.model.rotation.y = 0;
+                                textEl.style.opacity = '0';
+                                lineTop.style.width = '0';
+                                lineBottom.style.width = '0';
+                            }
+                            // Rotate and show text (33-66%)
+                            else if (progress < 0.66) {
+                                const rotateProgress = (progress - 0.33) / 0.33;
+                                this.model.traverse((child) => {
+                                    if (child.isMesh) child.material.opacity = 1;
+                                });
+                                this.model.rotation.y = rotateProgress * Math.PI * 2;
+                                textEl.style.opacity = Math.min(rotateProgress * 2, 1);
+                                const lineProgress = Math.max(0, (rotateProgress - 0.5) * 2);
+                                lineTop.style.width = (lineProgress * 50) + '%';
+                                lineBottom.style.width = (lineProgress * 50) + '%';
+                            }
+                            // Final rotation and line expansion (66-100%)
+                            else {
+                                const returnProgress = (progress - 0.66) / 0.34;
+                                this.model.rotation.y = Math.PI * 2 + returnProgress * Math.PI * 2;
+                                textEl.style.opacity = 1;
+                                const lineWidth = 50 + (returnProgress * 50);
+                                lineTop.style.width = lineWidth + '%';
+                                lineBottom.style.width = lineWidth + '%';
+                            }
+                        }
+                    }
+                });
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            new Projects3DIntro();
+        });
+    </script>
+</body>
+
+</html>

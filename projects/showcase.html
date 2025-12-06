@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .project-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            border: 1px solid #2a2a2a;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            position: relative;
+            isolation: isolate;
+            transform-style: preserve-3d;
+            transition:
+                transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            min-height: 350px;
+        }
+
+        /* Premium 3D Tilt + Spotlight + Shimmer Effect */
+        .project-card::before,
+        .project-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        /* Mouse-tracking spotlight */
+        .project-card::before {
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.08) 25%,
+                    transparent 60%);
+            z-index: 1;
+            mix-blend-mode: overlay;
+        }
+
+        /* Animated shimmer overlay */
+        .project-card::after {
+            background: linear-gradient(135deg,
+                    transparent 0%,
+                    transparent 40%,
+                    rgba(255, 255, 255, 0.03) 45%,
+                    rgba(255, 255, 255, 0.08) 50%,
+                    rgba(255, 255, 255, 0.03) 55%,
+                    transparent 60%,
+                    transparent 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                background-position: -100% -100%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .project-card:hover::before,
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform:
+                perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translateY(-8px) scale(1.02);
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(255, 255, 255, 0.08),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stagger animation for cards */
+        .project-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .project-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .project-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .project-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .project-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .project-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .project-card:nth-child(n+7) {
+            animation-delay: 0.7s;
+        }
+
+        .project-image {
+            width: 40%;
+            min-width: 300px;
+            height: 100%;
+            min-height: 350px;
+            object-fit: cover;
+            display: block;
+            background: #0a0a0a;
+            flex-shrink: 0;
+        }
+
+        .project-content {
+            padding: 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .project-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 24px;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-github {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-github:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-demo:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 8px 24px rgba(16, 185, 129, 0.4),
+                0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-card {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .project-image {
+                width: 100%;
+                min-width: unset;
+                height: 250px;
+                min-height: unset;
+            }
+
+            .projects-list {
+                gap: 24px;
+            }
+
+            body {
+                padding: 40px 16px;
+            }
+
+            .project-name {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #666;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="projects-container" class="projects-list"></div>
+    </div>
+
+    <script>
+        // ========================================
+        // 📝 PROJECTS TEMPLATE
+        // ========================================
+        // To add a new project, copy this template and paste it into the projects array below:
+        /*
+        {
+            name: "Your Project Name",
+            description: "Brief description of your project. What it does, technologies used, key features, etc.",
+            image: "images/your-image.jpg",  // 800x600 recommended
+            github: "https://github.com/username/repo",  // Leave empty "" if no GitHub
+            demo: "https://yourproject.com"  // Leave empty "" if no live demo
+        },
+        */
+
+        // ========================================
+        // 🎨 YOUR PROJECTS - ADD/EDIT HERE
+        // ========================================
+        const projects = [
+            {
+                name: "Example Project 1",
+                description: "A full-stack web application with real-time features. Built using React, Node.js, and WebSocket for seamless user experience.",
+                image: "images/project1.jpg",
+                github: "https://github.com/yourusername/project1",
+                demo: "https://project1-demo.com"
+            },
+            {
+                name: "Example Project 2",
+                description: "Machine learning project for image classification. Implemented using TensorFlow and deployed on cloud infrastructure.",
+                image: "images/project2.jpg",
+                github: "https://github.com/yourusername/project2",
+                demo: ""  // No demo - button will be hidden
+            },
+            {
+                name: "Example Project 3",
+                description: "Mobile-first responsive design system with reusable components. Created with modern CSS and JavaScript patterns.",
+                image: "images/project3.jpg",
+                github: "",  // No GitHub - button will be hidden
+                demo: "https://project3-demo.com"
+            }
+        ];
+
+        // ========================================
+        // ⚙️ AUTO-GENERATION LOGIC (Don't edit below)
+        // ========================================
+        const container = document.getElementById('projects-container');
+
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            // Image
+            const img = document.createElement('img');
+            img.src = project.image;
+            img.alt = project.name;
+            img.className = 'project-image';
+            img.onerror = function () {
+                // Fallback if image not found
+                this.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                this.style.display = 'flex';
+                this.style.alignItems = 'center';
+                this.style.justifyContent = 'center';
+                this.alt = '';
+            };
+
+            // Content
+            const content = document.createElement('div');
+            content.className = 'project-content';
+
+            // Name
+            const name = document.createElement('h2');
+            name.className = 'project-name';
+            name.textContent = project.name;
+
+            // Description
+            const description = document.createElement('p');
+            description.className = 'project-description';
+            description.textContent = project.description;
+
+            // Buttons container
+            const buttons = document.createElement('div');
+            buttons.className = 'project-buttons';
+
+            // GitHub button (only if link provided)
+            if (project.github && project.github.trim() !== '') {
+                const githubBtn = document.createElement('a');
+                githubBtn.href = project.github;
+                githubBtn.target = '_blank';
+                githubBtn.rel = 'noopener noreferrer';
+                githubBtn.className = 'btn btn-github';
+                githubBtn.innerHTML = `
+                    <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                `;
+                buttons.appendChild(githubBtn);
+            }
+
+            // Live Demo button (only if link provided)
+            if (project.demo && project.demo.trim() !== '') {
+                const demoBtn = document.createElement('a');
+                demoBtn.href = project.demo;
+                demoBtn.target = '_blank';
+                demoBtn.rel = 'noopener noreferrer';
+                demoBtn.className = 'btn btn-demo';
+                demoBtn.innerHTML = `
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    Live Demo
+                `;
+                buttons.appendChild(demoBtn);
+            }
+
+            // Assemble card
+            content.appendChild(name);
+            content.appendChild(description);
+            content.appendChild(buttons);
+            card.appendChild(content);
+            card.appendChild(img);
+
+            return card;
+        }
+
+        // Render all projects
+        if (projects.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h2>No projects yet</h2>
+                    <p>Add your projects by editing the projects array in the HTML file.</p>
+                </div>
+            `;
+        } else {
+            projects.forEach(project => {
+                container.appendChild(createProjectCard(project));
+            });
+        }
+
+        // ========================================
+        // 🎨 PREMIUM 3D TILT EFFECT
+        // ========================================
+        const cards = document.querySelectorAll('.project-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -5; // Tilt up/down
+                const rotateY = ((x - centerX) / centerX) * 5;   // Tilt left/right
+
+                const mouseXPercent = (x / rect.width) * 100;
+                const mouseYPercent = (y / rect.height) * 100;
+
+                card.style.setProperty('--rotate-x', `${rotateX}deg`);
+                card.style.setProperty('--rotate-y', `${rotateY}deg`);
+                card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+                card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.setProperty('--rotate-x', '0deg');
+                card.style.setProperty('--rotate-y', '0deg');
+            });
+        });
+    </script>
+</body>
+
+</html>

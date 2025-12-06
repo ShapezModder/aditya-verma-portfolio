@@ -1,0 +1,3557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Verma</title>
+    <link rel="icon" type="image/png" href="sun1.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            /* Security: Disable text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Security: Disable image dragging and selection */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
+        }
+
+        /* Security: Allow pointer events on clickable elements */
+        a,
+        button,
+        input,
+        textarea,
+        select,
+        .timeline-circle,
+        .hero-nav-btn,
+        .btn,
+        .verify-btn,
+        .submit-btn,
+        .social-link {
+            pointer-events: auto !important;
+        }
+
+        /* Security: Protect video element */
+        video {
+            pointer-events: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+
+        video::-webkit-media-controls-enclosure {
+            display: none !important;
+        }
+
+        /* Security: Hide download button on video */
+        video::-webkit-media-controls-download-button {
+            display: none !important;
+        }
+
+        video::-internal-media-controls-download-button {
+            display: none !important;
+        }
+
+        /* Security: Blur content when DevTools detected */
+        body.devtools-open * {
+            filter: blur(10px);
+            pointer-events: none;
+        }
+
+        body.devtools-open::before {
+            content: '⚠️ Developer Tools Detected - Content Protected';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0000;
+            z-index: 999999;
+            text-align: center;
+            filter: none;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+        }
+
+        /* Loader */
+        .loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+
+        .loader-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-welcome {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+
+        .loader-bar-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fff, #888);
+            animation: loadProgress 2s ease forwards 0.8s;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loadProgress {
+            to {
+                width: 100%;
+            }
+        }
+
+        /* ASCII Header */
+        .ascii-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            z-index: 9;
+            overflow: hidden;
+            background: linear-gradient(180deg, #000 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        #headerCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* GSAP Transition Panel - Hero to Tech */
+        .transition-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 10;
+            clip-path: circle(0% at 50% 100%);
+            pointer-events: none;
+        }
+
+        /* Premium About-to-Contact Transition Panel */
+        .about-contact-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 50;
+            clip-path: circle(0% at 50% 100%);
+            pointer-events: none;
+            will-change: clip-path;
+        }
+
+        /* Scroll trigger spacer for premium transition */
+        .about-contact-spacer {
+            height: 50vh;
+            position: relative;
+            background: #000;
+            z-index: 40;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        .hi-text {
+            text-align: center;
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            color: #888;
+            letter-spacing: 2px;
+            margin-bottom: -30px;
+            z-index: 10;
+        }
+
+        .particle-container {
+            width: 100%;
+            height: 45vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #particleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .role-text {
+            text-align: center;
+            margin-top: -40px;
+        }
+
+        .role-text h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 400;
+            letter-spacing: 14px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #e8dcc4 0%, #c9a227 25%, #d4740f 50%, #c9a227 75%, #e8dcc4 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 4s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        .scroll-arrow svg {
+            width: 100%;
+            height: 100%;
+            stroke: #888;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateY(10px);
+                opacity: 1;
+            }
+        }
+
+        .scroll-text {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .scroll-text span {
+            color: #c9a227;
+            font-weight: 500;
+        }
+
+        /* Hero Navigation Buttons - Glassmorphism B/W */
+        .hero-nav-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 3.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-nav-btn {
+            padding: 14px 32px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Shimmer effect on hover */
+        .hero-nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .hero-nav-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Glow effect */
+        .hero-nav-btn::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.3));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .hero-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.95);
+            color: #000;
+            transform: translateY(-6px) scale(1.02);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+        }
+
+        .hero-nav-btn:hover::after {
+            opacity: 1;
+        }
+
+        .hero-nav-btn:active {
+            transform: translateY(-2px) scale(1);
+        }
+
+        /* Staggered animation for each button */
+        .hero-nav-btn:nth-child(1) {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 3.5s;
+            opacity: 0;
+        }
+
+        .hero-nav-btn:nth-child(2) {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 3.7s;
+            opacity: 0;
+        }
+
+        .hero-nav-btn:nth-child(3) {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 3.9s;
+            opacity: 0;
+        }
+
+        /* Scroll Spacer */
+        .scroll-spacer {
+            height: 40vh;
+            position: relative;
+        }
+
+        /* Tech Stack - Industry Gold Standard B/W Design */
+        .tech-stack-section {
+            min-height: 100vh;
+            background: #ffffff;
+            padding: 120px 80px;
+            color: #000;
+            margin-top: -15vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background grid pattern */
+        .tech-stack-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .tech-header {
+            text-align: center;
+            margin-bottom: 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tech-header h2 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+            color: #000;
+        }
+
+        .tech-header p {
+            font-size: 1.25rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 3D Floating Cards Container */
+        .tech-3d-container {
+            position: relative;
+            perspective: 1500px;
+            z-index: 1;
+        }
+
+        .tech-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tech-category {
+            background: #fff;
+            border-radius: 28px;
+            padding: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.03),
+                0 0 0 1px rgba(0, 0, 0, 0.02);
+        }
+
+        /* 3D Depth layers on hover */
+        .tech-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tech-category::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tech-category:hover {
+            transform: translateY(-16px) rotateX(4deg) scale(1.02);
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.12),
+                0 10px 30px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .tech-category:hover::before {
+            opacity: 1;
+        }
+
+        .category-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #000;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #000;
+            display: inline-block;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 12px;
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tech-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: #f5f5f5;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .tech-item:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .tech-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .tech-item img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tech-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.2) translateY(-4px);
+        }
+
+        .tech-item span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tech Marquee - Clean B/W */
+        .tech-marquee {
+            width: calc(100% - 80px);
+            margin-left: 40px;
+            margin-right: 40px;
+            overflow: hidden;
+            padding: 60px 0;
+            position: relative;
+            background: #000;
+            margin-top: 80px;
+            border-radius: 24px;
+        }
+
+        .tech-marquee::before,
+        .tech-marquee::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .tech-marquee::before {
+            left: 0;
+            background: linear-gradient(to right, #000, transparent);
+        }
+
+        .tech-marquee::after {
+            right: 0;
+            background: linear-gradient(to left, #000, transparent);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 80px;
+            width: max-content;
+            animation: scrollMarquee 35s linear infinite;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+            opacity: 0.5;
+            transition: all 0.4s ease;
+        }
+
+        .marquee-item:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .marquee-item img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .marquee-item span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        @keyframes scrollMarquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Projects 3D */
+        .projects-3d-section {
+            height: 150vh;
+            background: #fff;
+            position: relative;
+        }
+
+        .projects-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #projects3DCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #projects-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(4rem, 16vw, 18vw);
+            font-weight: 900;
+            color: #000;
+            opacity: 0;
+            z-index: 1;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .project-line {
+            position: absolute;
+            height: 4px;
+            background: #000;
+            z-index: 1;
+            width: 0;
+        }
+
+        #project-line-top {
+            top: calc(50% - 8vw);
+            left: 0;
+        }
+
+        #project-line-bottom {
+            top: calc(50% + 8vw);
+            right: 0;
+        }
+
+        /* Projects Showcase */
+        .projects-showcase-section {
+            min-height: 100vh;
+            background: #000;
+            padding: 100px 80px;
+            margin-top: -2px;
+            /* Fix white line gap */
+        }
+
+        .projects-header h2 {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 60px;
+        }
+
+        /* --- Showcase Card Styles --- */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            border: 1px solid #2a2a2a;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            position: relative;
+            isolation: isolate;
+            transform-style: preserve-3d;
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            min-height: 350px;
+        }
+
+        .project-card::before,
+        .project-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        .project-card::before {
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 25%, transparent 60%);
+            z-index: 1;
+            mix-blend-mode: overlay;
+        }
+
+        .project-card::after {
+            background: linear-gradient(135deg, transparent 0%, transparent 40%, rgba(255, 255, 255, 0.03) 45%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 55%, transparent 60%, transparent 100%);
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                background-position: -100% -100%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .project-card:hover::before,
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(255, 255, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .project-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .project-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .project-image {
+            width: 40%;
+            min-width: 300px;
+            height: 100%;
+            min-height: 350px;
+            object-fit: cover;
+            display: block;
+            background: #0a0a0a;
+            flex-shrink: 0;
+        }
+
+        .project-content {
+            padding: 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .project-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 24px;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-github {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-github:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-demo:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .project-card {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .project-image {
+                width: 100%;
+                min-width: unset;
+                height: 250px;
+                min-height: unset;
+            }
+
+            .project-name {
+                font-size: 1.5rem;
+            }
+
+            .projects-list {
+                gap: 24px;
+            }
+        }
+
+        /* About Section */
+        .about-section {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            background: #000000;
+            color: #ffffff;
+            padding: 80px 40px 80px 80px;
+        }
+
+        .section-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-100px);
+            animation: slideInFromLeft 1s ease forwards;
+            animation-delay: 0.2s;
+            max-width: 1400px;
+        }
+
+        @keyframes slideInFromLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .title-underline {
+            width: 0;
+            height: 2px;
+            background: #fff;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .about-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+            margin-bottom: 0;
+            max-width: 100%;
+            justify-content: space-between;
+        }
+
+        .about-text {
+            flex: 1;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.5s;
+            max-width: calc(100% - 280px);
+        }
+
+        .about-text p {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .profile-image-container {
+            width: 200px;
+            flex-shrink: 0;
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: 1.2s;
+            margin-right: 40px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-image-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('about/profile.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)) drop-shadow(0 0 1px rgba(255, 255, 255, 1)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+            mask-image: radial-gradient(circle 60px at var(--img-mouse-x, -200px) var(--img-mouse-y, -200px), black 0%, black 30%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle 60px at var(--img-mouse-x, -200px) var(--img-mouse-y, -200px), black 0%, black 30%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .profile-image-container:hover::before {
+            opacity: 1;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            min-height: 100vh;
+            background: #fff;
+            color: #000;
+            display: flex;
+        }
+
+        .contact-left {
+            flex: 1;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        .contact-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fafafa;
+            color: #000;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            padding: 18px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #fff;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .submit-btn.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .social-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .social-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-link svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .social-link.whatsapp:hover {
+            background: #25D366;
+        }
+
+        .social-link.whatsapp:hover svg {
+            fill: #fff;
+        }
+
+        .social-link.linkedin:hover {
+            background: #0077B5;
+        }
+
+        .social-link.linkedin:hover svg {
+            fill: #fff;
+        }
+
+        .social-link.github:hover {
+            background: #181717;
+        }
+
+        .social-link.github:hover svg {
+            fill: #fff;
+        }
+
+        .social-link.instagram:hover {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+
+        .social-link.instagram:hover svg {
+            fill: #fff;
+        }
+
+        .social-link.email:hover {
+            background: #EA4335;
+        }
+
+        .social-link.email:hover svg {
+            fill: #fff;
+        }
+
+        .contact-right {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            height: 100%;
+            min-width: 100%;
+        }
+
+        .video-container video {
+            height: 100%;
+            width: auto;
+            min-width: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            pointer-events: none;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 16px 32px;
+            background: #000;
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        @media (max-width: 768px) {
+
+            .tech-stack-section,
+            .projects-showcase-section,
+            .about-section {
+                padding: 60px 24px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-content {
+                flex-direction: column;
+            }
+
+            .profile-image-container {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .contact-section {
+                flex-direction: column;
+            }
+        }
+
+        /* Ensure sections appear above the fixed transition panel */
+        .tech-stack-section,
+        .projects-3d-section,
+        .projects-showcase-section,
+        .about-section {
+            position: relative;
+            z-index: 20;
+        }
+
+        .contact-section {
+            position: relative;
+            z-index: 60;
+        }
+
+        /* --- STITCHED STYLES FROM SEPARATE FILES --- */
+
+        /* From about.html: Timeline & Certifications */
+        .education-section {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 2s;
+        }
+
+        .education-header {
+            display: inline-block;
+            margin-bottom: 50px;
+        }
+
+        .education-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .education-underline {
+            width: 0;
+            height: 2px;
+            background: #ffffff;
+            animation: expandToText 0.8s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes expandToText {
+            to {
+                width: 100%;
+            }
+        }
+
+        .timeline {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            max-width: 800px;
+            margin-left: 40px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #2a2a2a;
+            z-index: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .timeline-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+        }
+
+        .timeline-circle img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-circle {
+            transform: scale(1.2) translateY(-10px);
+            border-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-item:hover .timeline-circle img {
+            filter: grayscale(0%);
+        }
+
+        .timeline-circle a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+        }
+
+        .timeline-circle a img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .timeline-card {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        .timeline-item:hover .timeline-card,
+        .timeline-card:hover {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        .timeline-card::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #1a1a1a;
+        }
+
+        .cert-card {
+            min-width: 320px;
+            max-width: 350px;
+        }
+
+        .cert-preview {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .verify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+        }
+
+        .verify-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 24px rgba(16, 185, 129, 0.4),
+                0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .verify-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Backdrop Blur Overlay for Mobile Popups */
+        .popup-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 999998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile Centered Popup Card */
+        .timeline-card.mobile-popup {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            bottom: auto !important;
+            right: auto !important;
+            min-width: 320px;
+            max-width: 90vw;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 999999 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            display: block !important;
+        }
+
+        /* From showcase.html: 3D Project Cards */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px 0;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: #111;
+            border-radius: 16px;
+            border: 1px solid #333;
+            position: relative;
+            isolation: isolate;
+            transform-style: preserve-3d;
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            min-height: 350px;
+            margin-bottom: 40px;
+        }
+
+        .project-card:hover {
+            transform: perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-image {
+            width: 45%;
+            background: #000;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .project-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #bbb;
+            margin-bottom: 24px;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-github {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-github:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+        }
+
+        .btn-demo:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========================================
+           📱 MOBILE RESPONSIVE STYLES
+           ======================================== */
+
+        @media (max-width: 1024px) {
+            .tech-stack-section {
+                padding: 80px 40px;
+            }
+
+            .tech-categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .contact-section {
+                flex-direction: column;
+            }
+
+            .contact-left {
+                padding: 60px 40px;
+            }
+
+            .contact-right {
+                min-height: 50vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            /* Hero Section */
+            .hi-text {
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+
+            .particle-container {
+                height: 20vh;
+            }
+
+            .role-text h2 {
+                font-size: 0.9rem;
+                letter-spacing: 6px;
+            }
+
+            .hero-nav-buttons {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+                margin-top: 30px;
+            }
+
+            .hero-nav-btn {
+                padding: 12px 28px;
+                font-size: 0.75rem;
+                width: 180px;
+                text-align: center;
+            }
+
+            .scroll-indicator {
+                bottom: 30px;
+            }
+
+            .scroll-text {
+                font-size: 0.65rem;
+                letter-spacing: 2px;
+            }
+
+            /* Tech Stack */
+            .tech-stack-section {
+                padding: 60px 20px;
+            }
+
+            .tech-header {
+                margin-bottom: 50px;
+            }
+
+            .tech-header h2 {
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+
+            .tech-header p {
+                font-size: 1rem;
+            }
+
+            .tech-categories {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .tech-category {
+                padding: 24px;
+                border-radius: 20px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .tech-item {
+                padding: 12px 8px;
+            }
+
+            .tech-item img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .tech-item span {
+                font-size: 0.65rem;
+            }
+
+            .tech-marquee {
+                width: calc(100% - 40px);
+                margin-left: 20px;
+                margin-right: 20px;
+                padding: 40px 0;
+                margin-top: 40px;
+                border-radius: 16px;
+            }
+
+            /* Projects 3D Section - Mobile optimized with 3D model */
+            .projects-3d-section {
+                height: 180vh;
+                /* Longer scroll for text to stay visible */
+            }
+
+            .projects-sticky {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
+
+            #projects3DCanvas {
+                display: block;
+            }
+
+            #projects-text {
+                font-size: 4rem !important;
+                font-weight: 900;
+                letter-spacing: 0.05em;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .project-line {
+                height: 3px;
+            }
+
+            /* Projects Showcase */
+            .projects-showcase-section {
+                padding: 60px 20px;
+            }
+
+            .projects-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .project-card {
+                flex-direction: column;
+                padding: 20px;
+                border-radius: 20px;
+            }
+
+            .project-image {
+                width: 100%;
+                height: 200px;
+                border-radius: 12px;
+            }
+
+            .project-content {
+                padding: 0;
+                margin-top: 20px;
+            }
+
+            .project-name {
+                font-size: 1.5rem;
+            }
+
+            .project-description {
+                font-size: 0.9rem;
+            }
+
+            /* About Section - Premium Mobile Layout */
+            .about-section {
+                padding: 60px 20px;
+            }
+
+            .about-content {
+                flex-direction: column-reverse;
+                /* Put image first (top) */
+                display: flex;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+                margin-bottom: 16px;
+            }
+
+            .title-underline {
+                width: 100px !important;
+                margin-bottom: 30px;
+            }
+
+            /* Profile image at top, centered */
+            .profile-image-container {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 40px auto;
+                order: -1;
+                /* Bring to top */
+            }
+
+            .about-text {
+                font-size: 1rem;
+                line-height: 1.8;
+                text-align: justify;
+                width: 100%;
+                max-width: 100% !important;
+                /* Override desktop calc(100% - 280px) */
+                box-sizing: border-box;
+            }
+
+            .about-text p {
+                margin-bottom: 16px;
+                text-align: justify;
+                word-spacing: -1px;
+            }
+
+            .education-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .timeline {
+                margin-left: 0;
+                flex-wrap: nowrap;
+                /* Keep horizontal */
+                justify-content: flex-start;
+                gap: 20px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 40px 10px;
+                max-width: 100%;
+                /* Allow horizontal scrolling if needed */
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .timeline-line {
+                display: none;
+            }
+
+            .timeline-item {
+                flex-shrink: 0;
+                /* Prevent shrinking */
+            }
+
+            .timeline-circle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .timeline-circle img {
+                width: 50px;
+                height: 50px;
+            }
+
+            /* Hide default card behavior on mobile */
+            .timeline-card {
+                display: none;
+            }
+
+            /* Desktop hover behavior disabled on mobile */
+            .timeline-item:hover .timeline-card {
+                display: none;
+            }
+
+            /* Contact Section */
+            .contact-section {
+                flex-direction: column;
+            }
+
+            .contact-left {
+                padding: 60px 20px;
+                max-width: 100%;
+            }
+
+            .contact-title {
+                font-size: 2.5rem;
+            }
+
+            .contact-right {
+                min-height: 40vh;
+                order: -1;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .social-link {
+                width: 48px;
+                height: 48px;
+            }
+
+            /* Transition Spacers */
+            .scroll-spacer {
+                height: 30vh;
+            }
+
+            .about-contact-spacer {
+                height: 5vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            /* Extra small screens */
+            .hero-nav-buttons {
+                width: 100%;
+                padding: 0 20px;
+            }
+
+            .hero-nav-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tech-item img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .projects-header h2 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .contact-title {
+                font-size: 2rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+            }
+
+            .submit-btn {
+                padding: 16px 32px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loader-->
+    <div class="loader-screen" id="loader">
+        <p class="loader-welcome">Welcome</p>
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+        <p class="loader-text">Loading Portfolio</p>
+    </div>
+
+    <!-- ASCII Header-->
+    <div class="ascii-header">
+        <canvas id="headerCanvas"></canvas>
+    </div>
+
+    <!-- GSAP Transition Panel-->
+    <div class="transition-panel"></div>
+
+    <!-- Hero Section-->
+    <section class="hero-section" id="hero">
+        <div class="hi-text">Hey there,
+            I'm</div>
+        <div class="particle-container"><canvas id="particleCanvas"></canvas></div>
+        <div class="role-text">
+            <h2>Full Stack Developer</h2>
+        </div>
+        <div class="hero-nav-buttons"><a href="#projectsShowcase" class="hero-nav-btn">Projects</a><a href="#about"
+                class="hero-nav-btn">About</a><a href="#contact" class="hero-nav-btn">Contact</a></div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"><svg viewBox="0 0 24 24">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                </svg></div>
+            <p class="scroll-text">Scroll to <span>Explore</span></p>
+        </div>
+    </section>
+    <!-- Scroll Spacer for GSAP Transition-->
+        <div class="scroll-spacer"></div>
+        <!-- Tech Stack Section-->
+            <section class="tech-stack-section" id="techStack">
+                <div class="tech-header">
+                    <h2>Tech Stack</h2>
+                    <p>The technologies and tools I use to bring ideas to life</p>
+                </div>
+                <div class="tech-categories">
+                    <div class="tech-category">
+                        <h3 class="category-title">Frontend</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                                    alt="React"><span>React</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
+                                    alt="Next.js"><span>Next.js</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                                    alt="TypeScript"><span>TypeScript</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                                    alt="JavaScript"><span>JavaScript</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+                                    alt="Tailwind"><span>Tailwind</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                                    alt="HTML5"><span>HTML5</span></div>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h3 class="category-title">Backend</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                                    alt="Node.js"><span>Node.js</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg"
+                                    alt="Express"><span>Express</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                                    alt="Python"><span>Python</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+                                    alt="FastAPI"><span>FastAPI</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg"
+                                    alt="GraphQL"><span>GraphQL</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
+                                    alt="Java"><span>Java</span></div>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h3 class="category-title">Database</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+                                    alt="MongoDB"><span>MongoDB</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+                                    alt="PostgreSQL"><span>PostgreSQL</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                                    alt="MySQL"><span>MySQL</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg"
+                                    alt="Redis"><span>Redis</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg"
+                                    alt="Firebase"><span>Firebase</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg"
+                                    alt="Supabase"><span>Supabase</span></div>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h3 class="category-title">Cloud & DevOps</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
+                                    alt="AWS"><span>AWS</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg"
+                                    alt="GCP"><span>Google Cloud</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+                                    alt="Docker"><span>Docker</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+                                    alt="Kubernetes"><span>Kubernetes</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"
+                                    alt="Vercel"><span>Vercel</span></div>
+                            <div class="tech-item"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+                                    alt="Git"><span>Git</span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tech Marquee-->
+                    <div class="tech-marquee">
+                        <div class="marquee-track">
+                            <!-- Set 1-->
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                                        alt="React"><span>React</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
+                                        alt="Next.js"><span>Next.js</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                                        alt="TypeScript"><span>TypeScript</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                                        alt="Python"><span>Python</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
+                                        alt="AWS"><span>AWS</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+                                        alt="Docker"><span>Docker</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+                                        alt="Git"><span>Git</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                                        alt="Node.js"><span>Node.js</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+                                        alt="FastAPI"><span>FastAPI</span></div>
+                                <div class="marquee-item"><img
+                                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+                                        alt="Kubernetes"><span>Kubernetes</span></div>
+                                <!-- Set 2 (Duplicate for loop)-->
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                                            alt="React"><span>React</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
+                                            alt="Next.js"><span>Next.js</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                                            alt="TypeScript"><span>TypeScript</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                                            alt="Python"><span>Python</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
+                                            alt="AWS"><span>AWS</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+                                            alt="Docker"><span>Docker</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+                                            alt="Git"><span>Git</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                                            alt="Node.js"><span>Node.js</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
+                                            alt="FastAPI"><span>FastAPI</span></div>
+                                    <div class="marquee-item"><img
+                                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+                                            alt="Kubernetes"><span>Kubernetes</span></div>
+                        </div>
+                    </div>
+            </section>
+            <!-- Projects 3D Intro-->
+                <section class="projects-3d-section" id="projects3D">
+                    <div class="projects-sticky"><canvas id="projects3DCanvas"></canvas>
+                        <div id="projects-text">Projects</div>
+                        <div id="project-line-top" class="project-line"></div>
+                        <div id="project-line-bottom" class="project-line"></div>
+                    </div>
+                </section>
+                <!-- Projects Showcase-->
+                    <section class="projects-showcase-section" id="projectsShowcase">
+                        <div class="projects-header">
+                            <h2>Featured Work</h2>
+                        </div>
+                        <div id="projects-container" class="projects-list"></div>
+                    </section>
+                    <!-- About Section-->
+                        <section class="about-section" id="about">
+                            <h1 class="section-title">About</h1>
+                            <div class="title-underline"></div>
+                            <div class="about-content">
+                                <div class="about-text">
+                                    <p>Hi,
+                                        I'm a passionate software developer with a love for creating beautiful and
+                                        functional web
+                                        experiences. I specialize in modern web technologies and enjoy building projects
+                                        that make a real impact.</p>
+                                    <p>With expertise in full-stack development,
+                                        I've worked on various projects ranging from responsive web
+                                        applications to complex backend systems. I'm always eager to learn new
+                                        technologies and take on
+                                        challenging problems.</p>
+                                    <p>When I'm not coding, you can find me exploring new design trends, contributing to
+                                        open-source
+                                        projects,
+                                        or experimenting with the latest frameworks and tools in the web development
+                                        ecosystem. </p>
+                                    <!-- Education Section-->
+                                        <div class="education-section">
+                                            <div class="education-header">
+                                                <h2 class="education-title">Education</h2>
+                                                <div class="education-underline"></div>
+                                            </div>
+                                            <div class="timeline">
+                                                <div class="timeline-line"></div>
+                                                <div class="timeline-item">
+                                                    <div class="timeline-circle"><img src="about/assets/1.png"
+                                                            alt="Education 1"></div>
+                                                    <div class="timeline-card">
+                                                        <h3 class="card-title">High School</h3>
+                                                        <p class="card-subtitle">St. Josephs School,
+                                                            Greater Noida • 2019</p>
+                                                        <p class="card-description">ICSE Board - Secured 83%</p>
+                                                    </div>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <div class="timeline-circle"><img src="about/assets/2.png"
+                                                            alt="Education 2"></div>
+                                                    <div class="timeline-card">
+                                                        <h3 class="card-title">Intermediate</h3>
+                                                        <p class="card-subtitle">C.P. International School,
+                                                            Farrukhabad • 2021</p>
+                                                        <p class="card-description">CBSE Board - Secured 80%</p>
+                                                    </div>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <div class="timeline-circle"><img src="about/assets/3.png"
+                                                            alt="Education 3"></div>
+                                                    <div class="timeline-card">
+                                                        <h3 class="card-title">BS (Bio)</h3>
+                                                        <p class="card-subtitle">Chattrapati Shahu Ji Maharaj
+                                                            University,
+                                                            Kanpur • 2025</p>
+                                                        <p class="card-description">Division - First</p>
+                                                    </div>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <div class="timeline-circle"><img src="about/assets/4.png"
+                                                            alt="Education 4"></div>
+                                                    <div class="timeline-card">
+                                                        <h3 class="card-title">BCA</h3>
+                                                        <p class="card-subtitle">Lovely Professional University,
+                                                            Punjab • 2028</p>
+                                                        <p class="card-description">Ongoing</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Certifications Section-->
+                                            <div class="education-section">
+                                                <div class="education-header">
+                                                    <h2 class="education-title">Certifications</h2>
+                                                    <div class="education-underline"></div>
+                                                </div>
+                                                <div class="timeline">
+                                                    <div class="timeline-line"></div>
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-circle"><a
+                                                                href="https://www.coursera.org/account/accomplishments/professional-cert/HUCC02UF0F6T"
+                                                                target="_blank" rel="noopener noreferrer"><img
+                                                                    src="about/certifications/1.png"
+                                                                    alt="Certification 1"></a></div>
+                                                        <div class="timeline-card cert-card"><img
+                                                                src="about/assets/certificate1.jpg" alt="Certificate 1"
+                                                                class="cert-preview">
+                                                            <h3 class="card-title">IBM Full Stack Software Developer
+                                                            </h3>
+                                                            <p class="card-subtitle">Issuing Organization- Coursera•
+                                                                Year- 2025</p><a
+                                                                href="https://www.coursera.org/account/accomplishments/professional-cert/HUCC02UF0F6T"
+                                                                class="verify-btn" target="_blank"
+                                                                rel="noopener noreferrer"><svg width="16" height="16"
+                                                                    viewBox="0 0 16 16" fill="none">
+                                                                    <path
+                                                                        d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                                        fill="currentColor" />
+                                                                </svg>Verify Certificate </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-circle"><a
+                                                                href="https://www.coursera.org/account/accomplishments/professional-cert/L5YYULUN2TVP"
+                                                                target="_blank" rel="noopener noreferrer"><img
+                                                                    src="about/certifications/2.png"
+                                                                    alt="Certification 2"></a></div>
+                                                        <div class="timeline-card cert-card"><img
+                                                                src="about/assets/certificate2.jpg" alt="Certificate 2"
+                                                                class="cert-preview">
+                                                            <h3 class="card-title">Google UX Design</h3>
+                                                            <p class="card-subtitle">Issuing Organization- Coursera •
+                                                                Year- 2025</p><a
+                                                                href="https://www.coursera.org/account/accomplishments/professional-cert/L5YYULUN2TVP"
+                                                                class="verify-btn" target="_blank"
+                                                                rel="noopener noreferrer"><svg width="16" height="16"
+                                                                    viewBox="0 0 16 16" fill="none">
+                                                                    <path
+                                                                        d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                                        fill="currentColor" />
+                                                                </svg>Verify Certificate </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-circle"><img
+                                                                src="about/certifications/3.png" alt="Certification 3">
+                                                        </div>
+                                                        <div class="timeline-card cert-card"><img
+                                                                src="about/assets/certificate3.jpg" alt="Certificate 3"
+                                                                class="cert-preview">
+                                                            <h3 class="card-title">OOP in C++</h3>
+                                                            <p class="card-subtitle">Issuing Organization- SRMIST• Year-
+                                                                2025</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-circle"><a
+                                                                href="https://www.linkedin.com/learning/certificates/8ad568b7e53a0ce65626852ac3011d2d96fbf8bb452be3e58c64f6becdb89c9c"
+                                                                target="_blank" rel="noopener noreferrer"><img
+                                                                    src="about/certifications/4.png"
+                                                                    alt="Certification 4"></a></div>
+                                                        <div class="timeline-card cert-card"><img
+                                                                src="about/assets/certificate4.jpg" alt="Certificate 4"
+                                                                class="cert-preview">
+                                                            <h3 class="card-title">UX Design</h3>
+                                                            <p class="card-subtitle">Issuing Organization- Linkedin •
+                                                                Year- 2025</p><a
+                                                                href="https://www.linkedin.com/learning/certificates/8ad568b7e53a0ce65626852ac3011d2d96fbf8bb452be3e58c64f6becdb89c9c"
+                                                                class="verify-btn" target="_blank"
+                                                                rel="noopener noreferrer"><svg width="16" height="16"
+                                                                    viewBox="0 0 16 16" fill="none">
+                                                                    <path
+                                                                        d="M8 0L10.5 5L16 5.5L12 9.5L13 15L8 12.5L3 15L4 9.5L0 5.5L5.5 5L8 0Z"
+                                                                        fill="currentColor" />
+                                                                </svg>Verify Certificate </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                </div>
+                                <div class="profile-image-container"><img src="about/profile.png" alt="Profile"
+                                        class="profile-image"></div>
+                            </div>
+                        </section>
+                        <!-- Premium About-to-Contact Scroll Transition-->
+                            <div class="about-contact-transition" id="aboutContactTransition"></div>
+                            <div class="about-contact-spacer" id="aboutContactSpacer"></div>
+                            <!-- Contact Section-->
+                                <section class="contact-section" id="contact">
+                                    <div class="contact-left">
+                                        <h1 class="contact-title">Get in Touch</h1>
+                                        <p class="contact-subtitle">Have a project in mind or just want to say hi? I'd
+                                            love to hear from you.</p>
+                                        <form class="contact-form" id="contactForm">
+                                            <div class="form-group"><label for="name">Your Name</label><input
+                                                    type="text" id="name" name="name" placeholder="John Doe" required>
+                                            </div>
+                                            <div class="form-group"><label for="email">Your Email</label><input
+                                                    type="email" id="email" name="email" placeholder="john@example.com"
+                                                    required></div>
+                                            <div class="form-group"><label for="message">Message</label><textarea
+                                                    id="message" name="message"
+                                                    placeholder="Tell me about your project..." required></textarea>
+                                            </div><button type="submit" class="submit-btn" id="submitBtn">Send
+                                                Message</button>
+                                        </form>
+                                        <!-- Social Links-->
+                                            <div class="social-section">
+                                                <p class="social-title">Or connect with me</p>
+                                                <div class="social-links">
+                                                    <!-- WhatsApp--><a href="https://wa.me/917599950949"
+                                                            target="_blank" rel="noopener noreferrer"
+                                                            class="social-link whatsapp" title="WhatsApp"><svg
+                                                                viewBox="0 0 24 24" fill="#25D366">
+                                                                <path
+                                                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                                            </svg></a>
+                                                        <!-- LinkedIn--><a
+                                                                href="https://www.linkedin.com/in/adityaverma9777/"
+                                                                target="_blank" rel="noopener noreferrer"
+                                                                class="social-link linkedin" title="LinkedIn"><svg
+                                                                    viewBox="0 0 24 24" fill="#0077B5">
+                                                                    <path
+                                                                        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                                                </svg></a>
+                                                            <!-- GitHub--><a href="https://github.com/adityaverma9777"
+                                                                    target="_blank" rel="noopener noreferrer"
+                                                                    class="social-link github" title="GitHub"><svg
+                                                                        viewBox="0 0 24 24" fill="#181717">
+                                                                        <path
+                                                                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                                                                    </svg></a>
+                                                                <!-- Instagram--><a
+                                                                        href="https://instagram.com/_.adityarajput"
+                                                                        target="_blank" rel="noopener noreferrer"
+                                                                        class="social-link instagram"
+                                                                        title="Instagram"><svg viewBox="0 0 24 24"
+                                                                            fill="#E4405F">
+                                                                            <path
+                                                                                d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+                                                                        </svg></a>
+                                                                    <!-- Email--><a
+                                                                            href="https://mail.google.com/mail/?view=cm&fs=1&to=adityaverma9777@gmail.com"
+                                                                            target="_blank" rel="noopener noreferrer"
+                                                                            class="social-link email" title="Email"><svg
+                                                                                viewBox="0 0 24 24" fill="#EA4335">
+                                                                                <path
+                                                                                    d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z" />
+                                                                            </svg></a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="contact-right">
+                                        <div class="video-container"><video autoplay muted loop playsinline>
+                                                <source src="contact/233201.mp4" type="video/mp4">
+                                            </video></div>
+                                        <div class="video-overlay"></div>
+                                    </div>
+                                </section>
+                                <!-- Footer-->
+                                    <style>
+                                        .site-footer {
+                                            background: #000;
+                                            padding: 40px 20px;
+                                            text-align: center;
+                                            border-top: 1px solid rgba(255, 255, 255, 0.1);
+                                            font-size: 0.85rem;
+                                            color: #888;
+                                            letter-spacing: 0.02em;
+                                            position: relative;
+                                            z-index: 100;
+                                            display: flex;
+                                            flex-direction: column;
+                                            align-items: center;
+                                            justify-content: center;
+                                        }
+
+                                        .site-footer p {
+                                            margin: 0;
+                                            line-height: 1.6;
+                                        }
+
+                                        .footer-copyright {
+                                            margin-bottom: 20px !important;
+                                            font-weight: 500;
+                                            color: #fff;
+                                        }
+
+                                        .footer-legal {
+                                            margin-bottom: 20px !important;
+                                            max-width: 800px;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            text-align: center;
+                                        }
+
+                                        .footer-security {
+                                            max-width: 800px;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            font-size: 0.75rem;
+                                            opacity: 0.7;
+                                            text-align: center;
+                                        }
+
+                                        @media (max-width: 768px) {
+                                            .site-footer {
+                                                padding: 30px 15px;
+                                            }
+
+                                            .footer-copyright {
+                                                font-size: 0.9rem;
+                                            }
+
+                                            .footer-legal,
+                                            .footer-security {
+                                                font-size: 0.7rem;
+                                                line-height: 1.5;
+                                            }
+                                        }
+                                    </style>
+                                    <footer class="site-footer">
+                                        <p class="footer-copyright">© Aditya Verma. All rights reserved.</p>
+                                        <p class="footer-legal">Unauthorized copying, reproduction, or misuse of any
+                                            content on this website is strictly
+                                            prohibited and may result in appropriate action under applicable security
+                                            and cyber-protection guidelines.
+                                        </p>
+                                        <p class="footer-security">For security and intellectual-property protection,
+                                            certain interactions such as
+                                            right-click, text selection, copying, and specific keyboard shortcuts have
+                                            been intentionally restricted.
+                                            Advanced Level-2 & Level-3 protection measures have been enabled to
+                                            safeguard images, text, videos, and
+                                            other proprietary assets displayed on this portfolio.</p>
+                                    </footer>
+
+                                    <!-- Toast Notification-->
+                                    <div class="toast" id="toast"></div>
+
+                                    <!-- Three.js Import-->
+                                    <script
+                                        type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"}}</script>
+
+                                    <script>
+                                        // Scroll to top on page load
+                                        window.scrollTo(0, 0);
+                                        if ('scrollRestoration' in history) {
+                                            history.scrollRestoration = 'manual';
+                                        }
+
+                                        // Loader - hide after 3 seconds and THEN start the name animation
+                                        window.addEventListener('load', () => {
+                                            // Ensure we start at the top
+                                            window.scrollTo(0, 0);
+
+                                            setTimeout(() => {
+                                                document.getElementById('loader').classList.add('hidden');
+                                                // Start ASCII name animation ONLY after loader is hidden
+                                                new ASCIIParticleName();
+                                            }, 3000);
+                                        });
+
+                                        // ASCII Header (this can start immediately as it's in the background)
+                                        class ASCIIWaveHeader {
+                                            constructor() {
+                                                this.canvas = document.getElementById('headerCanvas');
+                                                this.ctx = this.canvas.getContext('2d');
+                                                this.chars = '+-=*#@%&$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+                                                this.grid = [];
+                                                this.init();
+                                                this.animate();
+                                                window.addEventListener('resize', () => this.init());
+                                            }
+                                            init() {
+                                                this.canvas.width = this.canvas.offsetWidth;
+                                                this.canvas.height = this.canvas.offsetHeight;
+                                                this.charSize = 10;
+                                                this.cols = Math.ceil(this.canvas.width / this.charSize);
+                                                this.rows = Math.ceil(this.canvas.height / (this.charSize * 1.2));
+                                                const centerX = this.cols / 2, centerY = -this.rows * 0.3, radiusX = this.cols * 0.48, radiusY = this.rows * 1.5;
+                                                this.grid = [];
+                                                for (let row = 0; row < this.rows; row++) {
+                                                    this.grid[row] = [];
+                                                    for (let col = 0; col < this.cols; col++) {
+                                                        const dx = (col - centerX) / radiusX, dy = (row - centerY) / radiusY, dist = dx * dx + dy * dy;
+                                                        let opacity = 0;
+                                                        if (dist < 1) { opacity = (1 - dist) * 0.85; if (dist > 0.5) opacity *= (1 - dist) * 1.8; }
+                                                        this.grid[row][col] = { char: this.chars[Math.floor(Math.random() * this.chars.length)], opacity, changeTimer: Math.random() * 30 };
+                                                    }
+                                                }
+                                            }
+                                            update() {
+                                                for (let row = 0; row < this.rows; row++) {
+                                                    for (let col = 0; col < this.cols; col++) {
+                                                        const cell = this.grid[row][col];
+                                                        if (cell.opacity > 0.05) {
+                                                            cell.changeTimer -= 1;
+                                                            if (cell.changeTimer <= 0) { cell.char = this.chars[Math.floor(Math.random() * this.chars.length)]; cell.changeTimer = 5 + Math.random() * 20; }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            render() {
+                                                this.ctx.fillStyle = '#000';
+                                                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                                                this.ctx.font = `${this.charSize}px "Courier New", monospace`;
+                                                this.ctx.textAlign = 'center';
+                                                this.ctx.textBaseline = 'middle';
+                                                for (let row = 0; row < this.rows; row++) {
+                                                    for (let col = 0; col < this.cols; col++) {
+                                                        const cell = this.grid[row][col];
+                                                        if (cell.opacity > 0.05) {
+                                                            const x = col * this.charSize + this.charSize / 2, y = row * this.charSize * 1.2 + this.charSize / 2;
+                                                            this.ctx.fillStyle = `rgba(255, 255, 255, ${cell.opacity})`;
+                                                            this.ctx.fillText(cell.char, x, y);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            animate() { this.update(); this.render(); requestAnimationFrame(() => this.animate()); }
+                                        }
+
+                                        // ASCII Particle Name
+                                        class ASCIIParticleName {
+                                            constructor() {
+                                                this.canvas = document.getElementById('particleCanvas');
+                                                this.ctx = this.canvas.getContext('2d');
+                                                this.particles = [];
+                                                this.mouse = { x: -1000, y: -1000 };
+                                                this.asciiChars = ['H', '0', '1', '#', 'X', 'O', '+', '=', '-', '*', '@', '%', '&', '$'];
+                                                this.init();
+                                                this.setupEventListeners();
+                                                this.animate();
+                                            }
+                                            init() {
+                                                const container = this.canvas.parentElement;
+                                                this.canvas.width = container.offsetWidth;
+                                                this.canvas.height = container.offsetHeight;
+                                                this.generateParticles();
+                                            }
+                                            generateParticles() {
+                                                const textCanvas = document.createElement('canvas'), ctx = textCanvas.getContext('2d');
+
+                                                // Mobile responsive - detect screen width and adjust text size
+                                                const isMobile = window.innerWidth <= 768;
+                                                const textWidth = isMobile ? 500 : 1200;
+                                                const textHeight = isMobile ? 150 : 300;
+                                                const fontSize = isMobile ? 60 : 140;
+                                                const particleGap = isMobile ? 4 : 6;
+
+                                                textCanvas.width = textWidth; textCanvas.height = textHeight;
+                                                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, textCanvas.width, textCanvas.height);
+                                                ctx.fillStyle = '#fff'; ctx.font = `bold ${fontSize}px Inter, Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                                                ctx.fillText('Aditya Verma', textCanvas.width / 2, textCanvas.height / 2);
+                                                const imageData = ctx.getImageData(0, 0, textCanvas.width, textCanvas.height), pixels = imageData.data;
+                                                this.particles = [];
+                                                const offsetX = (this.canvas.width - textCanvas.width) / 2, offsetY = (this.canvas.height - textCanvas.height) / 2;
+                                                for (let y = 0; y < textCanvas.height; y += particleGap) {
+                                                    for (let x = 0; x < textCanvas.width; x += particleGap) {
+                                                        const i = (y * textCanvas.width + x) * 4;
+                                                        if (pixels[i] > 128) {
+                                                            this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, targetX: x + offsetX, targetY: y + offsetY, vx: 0, vy: 0, char: this.asciiChars[Math.floor(Math.random() * this.asciiChars.length)], opacity: 0 });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            updateParticles() {
+                                                this.particles.forEach(p => {
+                                                    const dx = p.x - this.mouse.x, dy = p.y - this.mouse.y, dist = Math.sqrt(dx * dx + dy * dy);
+                                                    if (dist < 150 && this.mouse.x !== -1000) { const force = (150 - dist) / 150 * 0.6; p.vx += Math.cos(Math.atan2(dy, dx)) * force; p.vy += Math.sin(Math.atan2(dy, dx)) * force; }
+                                                    p.vx += (p.targetX - p.x) * 0.05; p.vy += (p.targetY - p.y) * 0.05;
+                                                    p.vx *= 0.85; p.vy *= 0.85; p.x += p.vx; p.y += p.vy;
+                                                    const targetDist = Math.sqrt((p.targetX - p.x) ** 2 + (p.targetY - p.y) ** 2);
+                                                    p.opacity = Math.max(0, 1 - targetDist / 200);
+                                                });
+                                            }
+                                            render() {
+                                                this.ctx.fillStyle = '#000'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                                                this.ctx.font = '7px "Courier New", monospace'; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle';
+                                                this.particles.forEach(p => { this.ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`; this.ctx.fillText(p.char, p.x, p.y); });
+                                            }
+                                            animate() { this.updateParticles(); this.render(); requestAnimationFrame(() => this.animate()); }
+                                            setupEventListeners() {
+                                                window.addEventListener('resize', () => { this.init(); });
+                                                this.canvas.addEventListener('mousemove', (e) => { const rect = this.canvas.getBoundingClientRect(); this.mouse.x = e.clientX - rect.left; this.mouse.y = e.clientY - rect.top; });
+                                                this.canvas.addEventListener('mouseleave', () => { this.mouse.x = -1000; this.mouse.y = -1000; });
+                                            }
+                                        }
+
+                                        // Start ASCII wave header immediately (background animation)
+                                        new ASCIIWaveHeader();
+
+                                        // GSAP Scroll Animations
+                                        gsap.registerPlugin(ScrollTrigger);
+
+                                        // Animate Underlines (About & Education) - scroll-triggered
+                                        gsap.utils.toArray('.title-underline, .education-underline').forEach(line => {
+                                            gsap.to(line, {
+                                                width: 'calc(100vw - 80px)',
+                                                duration: 1.2,
+                                                ease: "power2.out",
+                                                scrollTrigger: {
+                                                    trigger: line,
+                                                    start: "top 85%",
+                                                    once: true
+                                                }
+                                            });
+                                        });
+
+                                        // HERO TO WHITE TRANSITION
+                                        const tl = gsap.timeline({ scrollTrigger: { trigger: ".scroll-spacer", start: "top bottom", end: "bottom bottom", scrub: 1.5 } });
+                                        tl.to(".transition-panel", { clipPath: "circle(150% at 50% 100%)", duration: 1, ease: "power2.inOut" });
+                                        gsap.to(".hero-section", { opacity: 0, y: -100, scrollTrigger: { trigger: ".scroll-spacer", start: "top 80%", end: "top 20%", scrub: 1 } });
+
+                                        // FADE OUT HEADER WITH TRANSITION
+                                        gsap.to(".ascii-header", {
+                                            opacity: 0,
+                                            scale: 1.1,
+                                            scrollTrigger: {
+                                                trigger: ".scroll-spacer",
+                                                start: "top 60%",
+                                                end: "bottom 80%",
+                                                scrub: 1
+                                            }
+                                        });
+
+                                        // ========================================
+                                        // 🎯 3D TILT EFFECT FOR TECH CARDS
+                                        // ========================================
+                                        document.querySelectorAll('.tech-category').forEach(card => {
+                                            card.addEventListener('mousemove', (e) => {
+                                                const rect = card.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const y = e.clientY - rect.top;
+                                                const centerX = rect.width / 2;
+                                                const centerY = rect.height / 2;
+
+                                                const rotateX = ((y - centerY) / centerY) * -8;
+                                                const rotateY = ((x - centerX) / centerX) * 8;
+
+                                                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-16px) scale(1.02)`;
+                                            });
+
+                                            card.addEventListener('mouseleave', () => {
+                                                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+                                            });
+                                        });
+
+                                        // ========================================
+                                        // ✨ STAGGERED ENTRANCE FOR TECH ITEMS
+                                        // ========================================
+                                        gsap.utils.toArray('.tech-category').forEach((category, index) => {
+                                            gsap.from(category, {
+                                                y: 100,
+                                                opacity: 0,
+                                                duration: 1,
+                                                delay: index * 0.15,
+                                                ease: "power3.out",
+                                                scrollTrigger: {
+                                                    trigger: '.tech-stack-section',
+                                                    start: 'top 70%',
+                                                    once: true
+                                                }
+                                            });
+                                        });
+
+                                        // Animate tech items inside categories
+                                        gsap.utils.toArray('.tech-item').forEach((item, index) => {
+                                            gsap.from(item, {
+                                                scale: 0.5,
+                                                opacity: 0,
+                                                duration: 0.6,
+                                                delay: 0.3 + (index * 0.03),
+                                                ease: "back.out(1.7)",
+                                                scrollTrigger: {
+                                                    trigger: '.tech-stack-section',
+                                                    start: 'top 60%',
+                                                    once: true
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+                                    <!-- Three.js + Projects-->
+                                    <script type="module">
+                                        import * as THREE from 'three';
+                                        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+                                        class Projects3D {
+                                            constructor() {
+                                                this.scene = new THREE.Scene();
+                                                this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+                                                this.camera.position.z = 8;
+                                                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                                                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                                                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                                                document.getElementById('projects3DCanvas').parentNode.replaceChild(this.renderer.domElement, document.getElementById('projects3DCanvas'));
+                                                this.renderer.domElement.id = 'projects3DCanvas';
+                                                this.renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;';
+                                                this.setupLighting();
+                                                this.loadModel();
+                                                this.setupScrollTrigger();
+                                                this.animate();
+                                                window.addEventListener('resize', () => { this.camera.aspect = window.innerWidth / window.innerHeight; this.camera.updateProjectionMatrix(); this.renderer.setSize(window.innerWidth, window.innerHeight); });
+                                            }
+                                            setupLighting() {
+                                                this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+                                                const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+                                                mainLight.position.set(5, 5, 5);
+                                                this.scene.add(mainLight);
+                                            }
+                                            loadModel() {
+                                                const loader = new FBXLoader(), textureLoader = new THREE.TextureLoader();
+                                                const tex = {
+                                                    base02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_BaseColor.png'),
+                                                    normal02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Normal.png'),
+                                                    rough02: textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Roughness.png')
+                                                };
+                                                loader.load('atlas-holding-the-earth (1)/source/SM_Atlas.fbx', (fbx) => {
+                                                    this.model = fbx;
+                                                    this.model.traverse((child) => { if (child.isMesh) { child.material = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0, roughness: 0.8, map: tex.base02, normalMap: tex.normal02, roughnessMap: tex.rough02 }); } });
+                                                    const box = new THREE.Box3().setFromObject(this.model), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+
+                                                    // Mobile responsive scaling - smaller on mobile
+                                                    const isMobile = window.innerWidth <= 768;
+                                                    const baseScale = isMobile ? 2.5 : 5;
+                                                    const scale = baseScale / Math.max(size.x, size.y, size.z);
+
+                                                    this.model.scale.setScalar(scale);
+                                                    this.model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+                                                    this.scene.add(this.model);
+                                                });
+                                            }
+                                            setupScrollTrigger() {
+                                                ScrollTrigger.create({
+                                                    trigger: "#projects3D", start: "top top", end: "bottom bottom", scrub: 1,
+                                                    onUpdate: (self) => {
+                                                        if (!this.model) return;
+                                                        const p = self.progress;
+                                                        const text = document.getElementById('projects-text');
+                                                        const lineTop = document.getElementById('project-line-top');
+                                                        const lineBottom = document.getElementById('project-line-bottom');
+                                                        const originalTop = window.innerHeight * 0.5 + (window.innerWidth * 0.08);
+
+                                                        if (p < 0.33) {
+                                                            const fade = p / 0.33;
+                                                            this.model.traverse(child => { if (child.isMesh) child.material.opacity = fade; });
+                                                            this.model.rotation.y = 0;
+                                                            text.style.opacity = '0';
+                                                            lineTop.style.width = '0';
+                                                            lineBottom.style.width = '0';
+                                                            lineBottom.style.height = '4px';
+                                                            lineBottom.style.top = 'calc(50% + 8vw)';
+                                                        } else if (p < 0.66) {
+                                                            const rotate = (p - 0.33) / 0.33;
+                                                            this.model.traverse(child => { if (child.isMesh) child.material.opacity = 1; });
+                                                            this.model.rotation.y = rotate * Math.PI * 2;
+                                                            text.style.opacity = Math.min(rotate * 2, 1);
+                                                            const line = Math.max(0, (rotate - 0.5) * 2);
+                                                            lineTop.style.width = (line * 50) + '%';
+                                                            lineBottom.style.width = (line * 50) + '%';
+                                                            lineBottom.style.height = '4px';
+                                                            lineBottom.style.top = 'calc(50% + 8vw)';
+                                                        } else {
+                                                            const ret = (p - 0.66) / 0.34;
+                                                            this.model.rotation.y = Math.PI * 2 + ret * Math.PI * 2;
+                                                            text.style.opacity = 1;
+
+                                                            if (ret < 0.5) {
+                                                                const lineWidth = 50 + (ret * 100);
+                                                                lineTop.style.width = lineWidth + '%';
+                                                                lineBottom.style.width = lineWidth + '%';
+                                                                lineBottom.style.height = '4px';
+                                                                lineBottom.style.top = 'calc(50% + 8vw)';
+                                                            } else {
+                                                                lineTop.style.width = '100%';
+                                                                lineBottom.style.width = '100%';
+                                                                const vert = (ret - 0.5) * 2;
+                                                                const currentHeight = 4 + (vert * (window.innerHeight - 4));
+                                                                const currentTop = originalTop - (vert * originalTop);
+                                                                lineBottom.style.height = currentHeight + 'px';
+                                                                lineBottom.style.top = currentTop + 'px';
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            animate() { requestAnimationFrame(() => this.animate()); this.renderer.render(this.scene, this.camera); }
+                                        }
+                                        window.addEventListener('DOMContentLoaded', () => { new Projects3D(); });
+                                    </script>
+
+                                    <script>
+                                        // ========================================
+                                        // 🏗️ PROJECTS SHOWCASE LOGIC
+                                        // ========================================
+                                        const projects = [
+                                            {
+                                                name: "Example Project 1",
+                                                description: "A full-stack web application with real-time features. Built using React, Node.js, and WebSocket for seamless user experience.",
+                                                image: "projects/images/project1.jpg",
+                                                github: "https://github.com/yourusername/project1",
+                                                demo: "https://project1-demo.com"
+                                            },
+                                            {
+                                                name: "Example Project 2",
+                                                description: "Machine learning project for image classification. Implemented using TensorFlow and deployed on cloud infrastructure.",
+                                                image: "projects/images/project2.jpg",
+                                                github: "https://github.com/yourusername/project2",
+                                                demo: ""
+                                            },
+                                            {
+                                                name: "Example Project 3",
+                                                description: "Mobile-first responsive design system with reusable components. Created with modern CSS and JavaScript patterns.",
+                                                image: "projects/images/project3.jpg",
+                                                github: "",
+                                                demo: "https://project3-demo.com"
+                                            }
+                                        ];
+
+                                        const container = document.getElementById('projects-container');
+
+                                        function createProjectCard(project) {
+                                            const card = document.createElement('div');
+                                            card.className = 'project-card';
+
+                                            // Image
+                                            const img = document.createElement('img');
+                                            img.src = project.image;
+                                            img.alt = project.name;
+                                            img.className = 'project-image';
+                                            img.onerror = function () {
+                                                this.style.background = 'linear-gradient(135deg, #111 0%, #222 100%)';
+                                                this.style.display = 'flex';
+                                                this.style.alignItems = 'center';
+                                                this.style.justifyContent = 'center';
+                                                this.alt = '';
+                                            };
+
+                                            const content = document.createElement('div');
+                                            content.className = 'project-content';
+
+                                            const name = document.createElement('h2');
+                                            name.className = 'project-name';
+                                            name.textContent = project.name;
+
+                                            const description = document.createElement('p');
+                                            description.className = 'project-description';
+                                            description.textContent = project.description;
+
+                                            const buttons = document.createElement('div');
+                                            buttons.className = 'project-buttons';
+
+                                            if (project.github && project.github.trim() !== '') {
+                                                const githubBtn = document.createElement('a');
+                                                githubBtn.href = project.github;
+                                                githubBtn.target = '_blank';
+                                                githubBtn.className = 'btn btn-github';
+                                                githubBtn.innerHTML = `<svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg> GitHub`;
+                                                buttons.appendChild(githubBtn);
+                                            }
+
+                                            if (project.demo && project.demo.trim() !== '') {
+                                                const demoBtn = document.createElement('a');
+                                                demoBtn.href = project.demo;
+                                                demoBtn.target = '_blank';
+                                                demoBtn.className = 'btn btn-demo';
+                                                demoBtn.innerHTML = `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Live Demo`;
+                                                buttons.appendChild(demoBtn);
+                                            }
+
+                                            content.appendChild(name);
+                                            content.appendChild(description);
+                                            content.appendChild(buttons);
+                                            card.appendChild(content); // Text left
+                                            card.appendChild(img);     // Image right (desktop)
+
+                                            // Tilt Effect
+                                            card.addEventListener('mousemove', (e) => {
+                                                const rect = card.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const y = e.clientY - rect.top;
+                                                const centerX = rect.width / 2;
+                                                const centerY = rect.height / 2;
+                                                const rotateX = ((y - centerY) / centerY) * -5;
+                                                const rotateY = ((x - centerX) / centerX) * 5;
+                                                const mouseXPercent = (x / rect.width) * 100;
+                                                const mouseYPercent = (y / rect.height) * 100;
+                                                card.style.setProperty('--rotate-x', `${rotateX}deg`);
+                                                card.style.setProperty('--rotate-y', `${rotateY}deg`);
+                                                card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+                                                card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+                                            });
+                                            card.addEventListener('mouseleave', () => {
+                                                card.style.setProperty('--rotate-x', '0deg');
+                                                card.style.setProperty('--rotate-y', '0deg');
+                                            });
+
+                                            return card;
+                                        }
+
+                                        projects.forEach(project => {
+                                            if (container) container.appendChild(createProjectCard(project));
+                                        });
+
+                                        // ========================================
+                                        // 🖱️ ABOUT PROFILE INTERACTION
+                                        // ========================================
+                                        const profileContainer = document.querySelector('.profile-image-container');
+                                        if (profileContainer) {
+                                            profileContainer.addEventListener('mousemove', (e) => {
+                                                const rect = profileContainer.getBoundingClientRect();
+                                                const x = e.clientX - rect.left;
+                                                const y = e.clientY - rect.top;
+                                                const mouseXPercent = (x / rect.width) * 100;
+                                                const mouseYPercent = (y / rect.height) * 100;
+                                                profileContainer.style.setProperty('--img-mouse-x', `${mouseXPercent}%`);
+                                                profileContainer.style.setProperty('--img-mouse-y', `${mouseYPercent}%`);
+                                            });
+                                        }
+
+                                        // ========================================
+                                        // 📱 MOBILE TIMELINE POPUP BEHAVIOR
+                                        // ========================================
+
+                                        // Create backdrop if it doesn't exist
+                                        let backdrop = document.querySelector('.popup-backdrop');
+                                        if (!backdrop) {
+                                            backdrop = document.createElement('div');
+                                            backdrop.className = 'popup-backdrop';
+                                            document.body.appendChild(backdrop);
+                                        }
+
+                                        let savedScrollPosition = 0;
+                                        let originalParent = null;
+                                        let originalNextSibling = null;
+
+                                        if (window.innerWidth <= 768) {
+                                            const timelineItems = document.querySelectorAll('.timeline-item');
+
+                                            timelineItems.forEach(item => {
+                                                const circle = item.querySelector('.timeline-circle');
+                                                const card = item.querySelector('.timeline-card');
+
+                                                if (circle && card) {
+                                                    // Remove any direct links from circles for certifications
+                                                    const circleLink = circle.querySelector('a');
+                                                    if (circleLink) {
+                                                        const img = circleLink.querySelector('img');
+                                                        if (img) {
+                                                            circle.innerHTML = '';
+                                                            circle.appendChild(img.cloneNode(true));
+                                                        }
+                                                    }
+
+                                                    // Handle circle clicks
+                                                    circle.addEventListener('click', (e) => {
+                                                        e.stopPropagation();
+                                                        e.preventDefault();
+
+                                                        savedScrollPosition = window.scrollY;
+                                                        originalParent = card.parentElement;
+                                                        originalNextSibling = card.nextElementSibling;
+
+                                                        // CRITICAL: Move card to body to appear above backdrop
+                                                        document.body.appendChild(card);
+
+                                                        backdrop.classList.add('active');
+                                                        card.classList.add('mobile-popup');
+
+                                                        card.style.display = 'block';
+                                                        card.style.position = 'fixed';
+                                                        card.style.top = '50%';
+                                                        card.style.left = '50%';
+                                                        card.style.transform = 'translate(-50%, -50%)';
+                                                        card.style.zIndex = '999999';
+                                                        card.style.opacity = '1';
+                                                        card.style.visibility = 'visible';
+                                                        card.style.pointerEvents = 'auto';
+                                                        card.style.minWidth = '320px';
+                                                        card.style.maxWidth = '90vw';
+
+                                                        document.body.style.overflow = 'hidden';
+                                                        document.body.style.position = 'fixed';
+                                                        document.body.style.top = `-${savedScrollPosition}px`;
+                                                        document.body.style.width = '100%';
+                                                    });
+
+                                                    const verifyBtn = card.querySelector('.verify-btn');
+                                                    if (verifyBtn) {
+                                                        verifyBtn.addEventListener('click', (e) => {
+                                                            e.stopPropagation();
+                                                        });
+                                                    }
+                                                }
+                                            });
+
+                                            backdrop.addEventListener('click', (e) => {
+                                                if (e.target === backdrop) {
+                                                    closeAllPopups();
+                                                }
+                                            });
+
+                                            document.addEventListener('click', (e) => {
+                                                const clickedCard = e.target.closest('.timeline-card');
+                                                const clickedCircle = e.target.closest('.timeline-circle');
+
+                                                if (!clickedCard && !clickedCircle) {
+                                                    closeAllPopups();
+                                                }
+                                            });
+                                        }
+
+                                        function closeAllPopups() {
+                                            backdrop.classList.remove('active');
+
+                                            document.querySelectorAll('.timeline-card').forEach(card => {
+                                                card.classList.remove('mobile-popup');
+                                                card.style.display = '';
+                                                card.style.position = '';
+                                                card.style.top = '';
+                                                card.style.left = '';
+                                                card.style.transform = '';
+                                                card.style.zIndex = '';
+                                                card.style.opacity = '';
+                                                card.style.visibility = '';
+                                                card.style.pointerEvents = '';
+                                                card.style.minWidth = '';
+                                                card.style.maxWidth = '';
+
+                                                // Move card back to original position
+                                                if (originalParent && card.parentElement === document.body) {
+                                                    if (originalNextSibling) {
+                                                        originalParent.insertBefore(card, originalNextSibling);
+                                                    } else {
+                                                        originalParent.appendChild(card);
+                                                    }
+                                                }
+                                            });
+
+                                            document.body.style.overflow = '';
+                                            document.body.style.position = '';
+                                            document.body.style.top = '';
+                                            document.body.style.width = '';
+
+                                            window.scrollTo(0, savedScrollPosition);
+                                        }
+
+
+                                        // ========================================
+                                        // 📧 CONTACT FORM WITH TOAST NOTIFICATIONS
+                                        // ========================================
+                                        const form = document.getElementById('contactForm');
+                                        const submitBtn = document.getElementById('submitBtn');
+                                        const toast = document.getElementById('toast');
+
+                                        function showToast(message, type = 'success') {
+                                            toast.textContent = message;
+                                            toast.className = 'toast ' + type + ' show';
+                                            setTimeout(() => {
+                                                toast.classList.remove('show');
+                                            }, 4000);
+                                        }
+
+                                        form?.addEventListener('submit', async (e) => {
+                                            e.preventDefault();
+
+                                            const formData = {
+                                                name: document.getElementById('name').value,
+                                                email: document.getElementById('email').value,
+                                                message: document.getElementById('message').value
+                                            };
+
+                                            submitBtn.classList.add('loading');
+                                            submitBtn.textContent = 'Sending...';
+
+                                            try {
+                                                const response = await fetch('/api/contact', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify(formData)
+                                                });
+
+                                                const result = await response.json();
+
+                                                if (response.ok) {
+                                                    submitBtn.classList.remove('loading');
+                                                    submitBtn.classList.add('success');
+                                                    submitBtn.textContent = 'Message Sent! ✓';
+                                                    showToast('Message sent successfully!', 'success');
+                                                    form.reset();
+
+                                                    setTimeout(() => {
+                                                        submitBtn.classList.remove('success');
+                                                        submitBtn.textContent = 'Send Message';
+                                                    }, 3000);
+                                                } else {
+                                                    throw new Error(result.error || 'Failed to send message');
+                                                }
+                                            } catch (error) {
+                                                submitBtn.classList.remove('loading');
+                                                submitBtn.textContent = 'Send Message';
+                                                showToast('Failed to send message. Please try again.', 'error');
+                                                console.error('Error:', error);
+                                            }
+                                        });
+
+                                        // ========================================
+                                        // 📏 ABOUT SECTION SCROLL ANIMATIONS
+                                        // ========================================
+                                        gsap.registerPlugin(ScrollTrigger);
+
+                                        // Animate the title underline on scroll
+                                        gsap.to('.title-underline', {
+                                            width: 'calc(100vw - 160px)',
+                                            duration: 1.2,
+                                            ease: 'power2.out',
+                                            scrollTrigger: {
+                                                trigger: '.about-section',
+                                                start: 'top 60%',
+                                                end: 'top 30%',
+                                                scrub: 1,
+                                                toggleActions: 'play reverse play reverse'
+                                            }
+                                        });
+
+                                        // ========================================
+                                        // ✨ PREMIUM ABOUT-TO-CONTACT TRANSITION
+                                        // ========================================
+
+                                        // Create the premium circle reveal transition
+                                        const aboutContactTl = gsap.timeline({
+                                            scrollTrigger: {
+                                                trigger: '#aboutContactSpacer',
+                                                start: 'top bottom',
+                                                end: 'bottom bottom',
+                                                scrub: 1.5,
+                                                // markers: true // Uncomment to debug
+                                            }
+                                        });
+
+                                        // Premium circle reveal animation - expanding from center bottom
+                                        aboutContactTl.to('#aboutContactTransition', {
+                                            clipPath: 'circle(150% at 50% 100%)',
+                                            ease: 'power2.inOut'
+                                        });
+
+                                        // ========================================
+                                        // 🔒 LEVEL 2 & 3 SECURITY PROTECTION
+                                        // ========================================
+
+                                        (function () {
+                                            'use strict';
+
+                                            // Console Warning
+                                            console.log('%c⚠️ STOP!', 'color: red; font-size: 60px; font-weight: bold;');
+                                            console.log('%c⚠️ This is a protected portfolio website.', 'color: #ff6b6b; font-size: 20px; font-weight: bold;');
+                                            console.log('%cUnauthorized copying, downloading, or reproduction of content is strictly prohibited.', 'color: #fff; font-size: 16px;');
+                                            console.log('%c© 2025 Aditya Verma. All Rights Reserved.', 'color: #666; font-size: 14px;');
+
+                                            // 1. Disable Right-Click
+                                            document.addEventListener('contextmenu', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            // 2. Disable Text Selection (additional JS layer)
+                                            document.addEventListener('selectstart', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            // 3. Disable Copy, Cut, Paste
+                                            document.addEventListener('copy', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            document.addEventListener('cut', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            document.addEventListener('paste', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            // 4. Disable DevTools Keyboard Shortcuts
+                                            document.addEventListener('keydown', function (e) {
+                                                // F12
+                                                if (e.keyCode === 123) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+Shift+I (Inspect)
+                                                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+Shift+J (Console)
+                                                if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+U (View Source)
+                                                if (e.ctrlKey && e.keyCode === 85) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+S (Save)
+                                                if (e.ctrlKey && e.keyCode === 83) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+Shift+C (Inspect Element)
+                                                if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+C (Copy)
+                                                if (e.ctrlKey && e.keyCode === 67) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+X (Cut)
+                                                if (e.ctrlKey && e.keyCode === 88) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+V (Paste)
+                                                if (e.ctrlKey && e.keyCode === 86) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+A (Select All)
+                                                if (e.ctrlKey && e.keyCode === 65) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // PrtSc (Print Screen) - Limited effectiveness
+                                                if (e.keyCode === 44) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                                // Ctrl+P (Print)
+                                                if (e.ctrlKey && e.keyCode === 80) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                            }, false);
+
+                                            // 5. Disable Drag & Drop
+                                            document.addEventListener('dragstart', function (e) {
+                                                e.preventDefault();
+                                                return false;
+                                            }, false);
+
+                                            /* 6. DevTools Detection Disabled for Localhost */
+
+                                            // 7. Protect against Inspect Element
+                                            document.addEventListener('mousedown', function (e) {
+                                                if (e.button === 2) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                }
+                                            }, false);
+
+                                            // 8. Disable selection on images specifically
+                                            const images = document.querySelectorAll('img');
+                                            images.forEach(img => {
+                                                img.addEventListener('mousedown', function (e) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                });
+                                            });
+
+                                            // 9. Video protection
+                                            const videos = document.querySelectorAll('video');
+                                            videos.forEach(video => {
+                                                video.setAttribute('controlsList', 'nodownload');
+                                                video.setAttribute('disablePictureInPicture', 'true');
+                                                video.setAttribute('oncontextmenu', 'return false;');
+
+                                                video.addEventListener('contextmenu', function (e) {
+                                                    e.preventDefault();
+                                                    return false;
+                                                });
+                                            });
+
+                                            // 10. Additional layer: Monitor for changes to protection
+                                            const observer = new MutationObserver(function (mutations) {
+                                                mutations.forEach(function (mutation) {
+                                                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                                        // Ensure protection stays active
+                                                    }
+                                                });
+                                            });
+
+                                            observer.observe(document.body, {
+                                                attributes: true,
+                                                attributeFilter: ['class']
+                                            });
+
+                                        })();
+
+
+
+                                    </script>
+
+</body>
+
+</html>

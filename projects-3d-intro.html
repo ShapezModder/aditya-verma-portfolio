@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - 3D Scroll Intro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        #scroll-container {
+            height: 300vh;
+            /* 3 scroll sections */
+            position: relative;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #projects-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(4rem, 16vw, 18vw);
+            font-weight: 900;
+            color: #000000;
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            max-width: 95vw;
+            text-align: center;
+        }
+
+        .yellow-line {
+            position: fixed;
+            height: 4px;
+            background: #000000;
+            z-index: 1;
+            pointer-events: none;
+            width: 0;
+            transition: none;
+        }
+
+        #line-top {
+            top: calc(50% - 8vw);
+            left: 0;
+        }
+
+        #line-bottom {
+            top: calc(50% + 8vw);
+            right: 0;
+            /* Height will be controlled dynamically via JavaScript */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #projects-text {
+                font-size: clamp(3rem, 14vw, 16vw);
+                max-width: 98vw;
+            }
+
+            #line-top {
+                top: calc(50% - 10vw);
+            }
+
+            #line-bottom {
+                top: calc(50% + 10vw);
+            }
+        }
+
+        @media (min-width: 1920px) {
+            #projects-text {
+                font-size: clamp(10rem, 14vw, 16vw);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="scroll-container">
+        <div id="canvas-container"></div>
+        <div id="projects-text">Projects</div>
+        <div id="line-top" class="yellow-line"></div>
+        <div id="line-bottom" class="yellow-line"></div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+        class ScrollBasedModel {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.model = null;
+                this.scrollProgress = 0;
+
+                this.init();
+                this.loadModel();
+                this.setupLighting();
+                this.setupScrollListener();
+                this.animate();
+            }
+
+            init() {
+                // Scene
+                this.scene = new THREE.Scene();
+                this.scene.background = null; // Transparent background
+
+                // Camera
+                this.camera = new THREE.PerspectiveCamera(
+                    50,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.z = 8;
+
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    alpha: true
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.shadowMap.enabled = true;
+                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+
+                // Handle resize
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            setupLighting() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+                this.scene.add(ambientLight);
+
+                // Main directional light
+                const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+                mainLight.position.set(5, 5, 5);
+                mainLight.castShadow = true;
+                this.scene.add(mainLight);
+
+                // Fill light
+                const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                fillLight.position.set(-5, 0, -5);
+                this.scene.add(fillLight);
+
+                // Back light
+                const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+                backLight.position.set(0, 5, -5);
+                this.scene.add(backLight);
+            }
+
+            loadModel() {
+                const loader = new FBXLoader();
+                const textureLoader = new THREE.TextureLoader();
+
+                // Preload all textures
+                const atlas02BaseColor = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_BaseColor.png');
+                const atlas02Normal = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Normal.png');
+                const atlas02Roughness = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_02_-_Default_Roughness.png');
+
+                const atlas03BaseColor = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_BaseColor.png');
+                const atlas03Normal = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_Normal.png');
+                const atlas03Roughness = textureLoader.load('atlas-holding-the-earth (1)/textures/SM_Atlas_03-_Default_Roughness.png');
+
+                loader.load('atlas-holding-the-earth (1)/source/SM_Atlas.fbx', (fbx) => {
+                    this.model = fbx;
+
+                    // Apply textures to all meshes
+                    this.model.traverse((child) => {
+                        if (child.isMesh) {
+                            const oldMaterial = child.material;
+                            const materialName = (oldMaterial && oldMaterial.name) ? oldMaterial.name : '';
+
+                            // Create new material with textures
+                            const newMaterial = new THREE.MeshStandardMaterial({
+                                transparent: true,
+                                opacity: 0,  // Start invisible for fade in
+                                roughness: 0.8,
+                                metalness: 0.1
+                            });
+
+                            // Apply correct texture set based on material name
+                            if (materialName.includes('02') || materialName.includes('Atlas_02')) {
+                                newMaterial.map = atlas02BaseColor;
+                                newMaterial.normalMap = atlas02Normal;
+                                newMaterial.roughnessMap = atlas02Roughness;
+                            } else if (materialName.includes('03') || materialName.includes('Atlas_03')) {
+                                newMaterial.map = atlas03BaseColor;
+                                newMaterial.normalMap = atlas03Normal;
+                                newMaterial.roughnessMap = atlas03Roughness;
+                            } else {
+                                // Try both sets for unknown materials
+                                newMaterial.map = atlas02BaseColor;
+                                newMaterial.normalMap = atlas02Normal;
+                                newMaterial.roughnessMap = atlas02Roughness;
+                            }
+
+                            child.material = newMaterial;
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+
+                    // Center and scale the model
+                    const box = new THREE.Box3().setFromObject(this.model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+
+                    // Scale to fit - INCREASED SIZE (5x bigger than before)
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 5 / maxDim;
+                    this.model.scale.setScalar(scale);
+
+                    // Center the model
+                    this.model.position.x = -center.x * scale;
+                    this.model.position.y = -center.y * scale;
+                    this.model.position.z = -center.z * scale;
+
+                    this.scene.add(this.model);
+                }, undefined, (error) => {
+                    console.error('Error loading model:', error);
+                });
+            }
+
+            setupScrollListener() {
+                window.addEventListener('scroll', () => {
+                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    this.scrollProgress = window.scrollY / scrollHeight;
+                    this.updateScene();
+                });
+            }
+
+            updateScene() {
+                if (!this.model) return;
+
+                const textElement = document.getElementById('projects-text');
+                const lineTop = document.getElementById('line-top');
+                const lineBottom = document.getElementById('line-bottom');
+
+                // Phase 1: Fade in (0% - 33%)
+                if (this.scrollProgress < 0.33) {
+                    const fadeProgress = this.scrollProgress / 0.33;
+                    this.model.traverse((child) => {
+                        if (child.isMesh && child.material) {
+                            child.material.opacity = fadeProgress;
+                        }
+                    });
+                    this.model.rotation.y = 0;
+                    textElement.style.opacity = '0';
+                    // Lines not visible yet
+                    lineTop.style.width = '0';
+                    lineBottom.style.width = '0';
+                    // Reset bottom line to initial state
+                    lineBottom.style.height = '4px';
+                    lineBottom.style.top = 'calc(50% + 8vw)';
+                }
+                // Phase 2: Rotate and show text (33% - 66%)
+                else if (this.scrollProgress < 0.66) {
+                    const rotateProgress = (this.scrollProgress - 0.33) / 0.33;
+                    // Keep model fully visible
+                    this.model.traverse((child) => {
+                        if (child.isMesh && child.material) {
+                            child.material.opacity = 1;
+                        }
+                    });
+                    this.model.rotation.y = rotateProgress * Math.PI * 2;
+                    // Text fades in quickly at start of this phase
+                    const textFadeProgress = Math.min(rotateProgress * 2, 1); // Fade in first half
+                    textElement.style.opacity = textFadeProgress;
+
+                    // Lines start animating when text is visible (50% through phase 2)
+                    const lineProgress = Math.max(0, (rotateProgress - 0.5) * 2);
+                    lineTop.style.width = (lineProgress * 50) + '%';
+                    lineBottom.style.width = (lineProgress * 50) + '%';
+                    // Keep bottom line thin and in original position during this phase
+                    lineBottom.style.height = '4px';
+                    lineBottom.style.top = 'calc(50% + 8vw)';
+                }
+                // Phase 3: Return to original (66% - 100%)
+                else {
+                    const returnProgress = (this.scrollProgress - 0.66) / 0.34;
+                    const currentRotation = Math.PI * 2;
+                    this.model.rotation.y = currentRotation + (returnProgress * Math.PI * 2);
+                    // Keep model fully visible - no fade out
+                    this.model.traverse((child) => {
+                        if (child.isMesh && child.material) {
+                            child.material.opacity = 1;
+                        }
+                    });
+                    // Keep text visible
+                    textElement.style.opacity = 1;
+
+                    // Lines continue to expand to 100%
+                    // First half of phase 3: Complete horizontal expansion to 100%
+                    // Second half of phase 3: Vertical expansion
+                    if (returnProgress < 0.5) {
+                        // First 50% of phase 3: lines reach 100% width
+                        const horizontalProgress = returnProgress * 2; // 0 to 1
+                        const lineWidth = 50 + (horizontalProgress * 50); // From 50% to 100%
+                        lineTop.style.width = lineWidth + '%';
+                        lineBottom.style.width = lineWidth + '%';
+                        // Keep bottom line thin and in original position during horizontal expansion
+                        lineBottom.style.height = '4px';
+                        lineBottom.style.top = 'calc(50% + 8vw)';
+                    } else {
+                        // Last 50% of phase 3: bottom line expands vertically
+                        // Keep lines at 100% width
+                        lineTop.style.width = '100%';
+                        lineBottom.style.width = '100%';
+
+                        // Vertical expansion progress (0 to 1)
+                        const verticalProgress = (returnProgress - 0.5) * 2;
+
+                        const minHeight = 4; // Starting height in pixels
+                        const maxHeightPx = window.innerHeight; // Full viewport height in pixels
+                        const currentHeight = minHeight + (verticalProgress * (maxHeightPx - minHeight));
+
+                        // Also animate the top position to move upward as it expands
+                        // Start position in pixels
+                        const startTop = window.innerHeight * 0.5 + (window.innerWidth * 0.08); // calc(50% + 8vw) converted to pixels
+                        const endTop = 0; // Move to top of screen
+                        const currentTop = startTop - (verticalProgress * startTop);
+
+                        lineBottom.style.height = currentHeight + 'px';
+                        lineBottom.style.top = currentTop + 'px';
+                    }
+                }
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            new ScrollBasedModel();
+        });
+    </script>
+</body>
+
+</html>
