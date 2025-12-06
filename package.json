@@ -4,6 +4,7 @@
     "description": "Portfolio Backend Server",
     "main": "server.js",
     "scripts": {
+        "build": "echo 'Static site - no build needed'",
         "start": "node server.js",
         "dev": "node server.js"
     },
