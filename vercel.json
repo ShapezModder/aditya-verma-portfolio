@@ -5,7 +5,7 @@
     "rewrites": [
         {
             "source": "/api/contact",
-            "destination": "/contact/api/contact.js"
+            "destination": "/api/contact.js"
         }
     ]
 }
