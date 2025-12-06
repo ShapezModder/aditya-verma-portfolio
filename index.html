@@ -2915,7 +2915,7 @@
         // 🚫 PREVENT MOBILE FORM INPUT SCROLL (CRITICAL FIX)
         // ========================================
         if (window.innerWidth <= 768) {
-            const formInputs = document.querySelectorAll('#contactForm input, #contactForm textarea');
+            const formInputs = document.querySelectorAll('input, textarea');
 
             formInputs.forEach(input => {
                 input.addEventListener('focus', (e) => {
