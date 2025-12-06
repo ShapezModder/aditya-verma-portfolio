@@ -2939,6 +2939,31 @@
                 }, { passive: true });
             });
         }
+
+        // ========================================
+        // 🚫 PREVENT ALL MOBILE SCROLL ON CLICKS (GLOBAL FIX)
+        // ========================================
+        if (window.innerWidth <= 768) {
+            // Prevent ANY scrolling from clicks/touches on mobile
+            let scrollLocked = false;
+
+            const preventScroll = (e) => {
+                const scrollY = window.scrollY;
+                const scrollX = window.scrollX;
+
+                // Lock scroll position
+                if (!scrollLocked) {
+                    scrollLocked = true;
+                    setTimeout(() => {
+                        window.scrollTo(scrollX, scrollY);
+                        scrollLocked = false;
+                    }, 0);
+                }
+            };
+
+            document.addEventListener('click', preventScroll, { passive: true, capture: true });
+            document.addEventListener('touchend', preventScroll, { passive: true, capture: true });
+        }
     </script>
 
     <!-- Three.js + Projects-->
