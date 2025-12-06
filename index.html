@@ -18,7 +18,15 @@
         }
 
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: auto;
+            /* Disable on mobile - prevents unwanted scroll on clicks */
+        }
+
+        /* Enable smooth scroll only on desktop */
+        @media (min-width: 769px) {
+            html {
+                scroll-behavior: smooth;
+            }
         }
 
         body {
