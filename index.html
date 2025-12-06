@@ -2910,6 +2910,27 @@
                 }
             });
         });
+
+        // ========================================
+        // 🚫 PREVENT MOBILE FORM INPUT SCROLL (CRITICAL FIX)
+        // ========================================
+        if (window.innerWidth <= 768) {
+            const formInputs = document.querySelectorAll('#contactForm input, #contactForm textarea');
+
+            formInputs.forEach(input => {
+                input.addEventListener('focus', (e) => {
+                    const scrollY = window.scrollY;
+                    const scrollX = window.scrollX;
+
+                    // Aggressively lock scroll position
+                    setTimeout(() => window.scrollTo(scrollX, scrollY), 0);
+
+                    for (let i = 1; i <= 20; i++) {
+                        setTimeout(() => window.scrollTo(scrollX, scrollY), i * 10);
+                    }
+                }, { passive: true });
+            });
+        }
     </script>
 
     <!-- Three.js + Projects-->
