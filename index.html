@@ -657,6 +657,47 @@
             letter-spacing: 0.5px;
         }
 
+        /* ========================================
+           🚫 MOBILE: DISABLE ALL TECH ANIMATIONS
+           ======================================== */
+        @media (max-width: 768px) {
+            .tech-item {
+                transition: none !important;
+                transform: none !important;
+                cursor: default !important;
+            }
+
+            .tech-item::before {
+                display: none !important;
+            }
+
+            .tech-item:hover {
+                transform: none !important;
+            }
+
+            .tech-item img {
+                filter: none !important;
+                /* Show full color, no grayscale */
+                transition: none !important;
+                transform: none !important;
+            }
+
+            .tech-item:hover img {
+                filter: none !important;
+                transform: none !important;
+            }
+
+            .tech-category {
+                transition: none !important;
+                transform: none !important;
+            }
+
+            /* Disable marquee animation on mobile */
+            .marquee-track {
+                animation: none !important;
+            }
+        }
+
         /* Tech Marquee - Clean B/W */
         .tech-marquee {
             width: calc(100% - 80px);
