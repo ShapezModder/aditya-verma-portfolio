@@ -692,9 +692,17 @@
                 transform: none !important;
             }
 
-            /* Disable marquee animation on mobile */
-            .marquee-track {
-                animation: none !important;
+            /* Marquee items: plain 2D, no interactions, but keep scrolling */
+            .marquee-item {
+                transition: none !important;
+                transform: none !important;
+                cursor: default !important;
+            }
+
+            .marquee-item img {
+                filter: none !important;
+                transition: none !important;
+                transform: none !important;
             }
         }
 
