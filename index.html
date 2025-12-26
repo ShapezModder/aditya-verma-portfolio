@@ -113,80 +113,16 @@
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
         }
 
-        /* Loader */
-        .loader-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-
-        .loader-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loader-welcome {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 300;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            margin-bottom: 40px;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.3s;
-        }
-
-        .loader-bar-container {
-            width: 200px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.6s;
-        }
-
-        .loader-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #fff, #888);
-            animation: loadProgress 2s ease forwards 0.8s;
-        }
-
-        .loader-text {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #666;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.9s;
-        }
-
+        /* Animation Keyframes */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes loadProgress {
-            to {
-                width: 100%;
             }
         }
 
@@ -932,17 +868,6 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
         .project-card:nth-child(1) {
             animation-delay: 0.1s;
@@ -2195,14 +2120,7 @@
 </head>
 
 <body>
-    <!-- Loader-->
-    <div class="loader-screen" id="loader">
-        <p class="loader-welcome">Welcome</p>
-        <div class="loader-bar-container">
-            <div class="loader-bar"></div>
-        </div>
-        <p class="loader-text">Loading Portfolio</p>
-    </div>
+
 
     <!-- ASCII Header-->
     <div class="ascii-header">
@@ -2274,12 +2192,6 @@
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
                             alt="Python"><span>Python</span></div>
                     <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
-                            alt="FastAPI"><span>FastAPI</span></div>
-                    <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg"
-                            alt="GraphQL"><span>GraphQL</span></div>
-                    <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
                             alt="Java"><span>Java</span></div>
                 </div>
@@ -2291,37 +2203,22 @@
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
                             alt="MongoDB"><span>MongoDB</span></div>
                     <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
-                            alt="PostgreSQL"><span>PostgreSQL</span></div>
-                    <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
                             alt="MySQL"><span>MySQL</span></div>
                     <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg"
-                            alt="Redis"><span>Redis</span></div>
-                    <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg"
                             alt="Firebase"><span>Firebase</span></div>
-                    <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg"
-                            alt="Supabase"><span>Supabase</span></div>
                 </div>
             </div>
             <div class="tech-category">
                 <h3 class="category-title">Cloud & DevOps</h3>
                 <div class="tech-grid">
                     <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
-                            alt="AWS"><span>AWS</span></div>
-                    <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg"
                             alt="GCP"><span>Google Cloud</span></div>
                     <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
                             alt="Docker"><span>Docker</span></div>
-                    <div class="tech-item"><img
-                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
-                            alt="Kubernetes"><span>Kubernetes</span></div>
                     <div class="tech-item"><img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg"
                             alt="Vercel"><span>Vercel</span></div>
@@ -2345,26 +2242,26 @@
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
                         alt="TypeScript"><span>TypeScript</span></div>
                 <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                        alt="JavaScript"><span>JavaScript</span></div>
+                <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                        alt="Node.js"><span>Node.js</span></div>
+                <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
                         alt="Python"><span>Python</span></div>
                 <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
-                        alt="AWS"><span>AWS</span></div>
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+                        alt="MongoDB"><span>MongoDB</span></div>
+                <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                        alt="MySQL"><span>MySQL</span></div>
                 <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
                         alt="Docker"><span>Docker</span></div>
                 <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
                         alt="Git"><span>Git</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
-                        alt="Node.js"><span>Node.js</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
-                        alt="FastAPI"><span>FastAPI</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
-                        alt="Kubernetes"><span>Kubernetes</span></div>
                 <!-- Set 2 (Duplicate for loop)-->
                 <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
@@ -2376,26 +2273,26 @@
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
                         alt="TypeScript"><span>TypeScript</span></div>
                 <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                        alt="JavaScript"><span>JavaScript</span></div>
+                <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                        alt="Node.js"><span>Node.js</span></div>
+                <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
                         alt="Python"><span>Python</span></div>
                 <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg"
-                        alt="AWS"><span>AWS</span></div>
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+                        alt="MongoDB"><span>MongoDB</span></div>
+                <div class="marquee-item"><img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                        alt="MySQL"><span>MySQL</span></div>
                 <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
                         alt="Docker"><span>Docker</span></div>
                 <div class="marquee-item"><img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
                         alt="Git"><span>Git</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
-                        alt="Node.js"><span>Node.js</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg"
-                        alt="FastAPI"><span>FastAPI</span></div>
-                <div class="marquee-item"><img
-                        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
-                        alt="Kubernetes"><span>Kubernetes</span></div>
             </div>
         </div>
     </section>
@@ -2856,6 +2753,9 @@
         // Start ASCII wave header immediately (background animation)
         new ASCIIWaveHeader();
 
+        // Start particle name animation  
+        new ASCIIParticleName();
+
         // GSAP Scroll Animations
         gsap.registerPlugin(ScrollTrigger);
 
@@ -3143,17 +3043,17 @@
                 demo: "https://canvas2-code.vercel.app/"
             },
             {
-                name: "Fortress - Offense Driven Security",
-                description: "Category: Adversarial Security Testing, Github not public to prevent misuse, Fill the contact form to get access to the project.",
-                image: "projects/images/Foretress.png",
-                github: "",
-                demo: "https://enterprise-security-saas.vercel.app/"
+                name: "Nebula Ledger - Realtime Space Situational Awareness",
+                description: "Category:Space Situational Awareness, Hackathon Submission: Student HackPad 2026, Theme: ORBIT (Building tech beyond Earth) ",
+                image: "projects/images/nebulaledger.png",
+                github: "https://github.com/adityaverma9777/Nebula-Ledger",
+                demo: "https://nebula-ledger.vercel.app/"
             },
             {
                 name: "CodeBendr - Built To Teach",
-                description: "Educational Technology (EdTech) Software, Educational IDE / Learning-Focused IDE",
+                description: "Category: Educational Technology (EdTech) Software, Educational IDE / Learning-Focused IDE",
                 image: "projects/images/codebendr800600.png",
-                github: "",
+                github: "https://github.com/adityaverma9777/CodeBendr",
                 demo: "https://code-bendr-website-releases.vercel.app/index.html"
             }
         ];
